@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">BeBlueGFPFTest</string>
     <string name="action_settings">Settings</string>
+    <string name="nav_header_search">Search Github Users</string>
+    <string name="no_results">No results</string>
+    <string name="required_field">Required field</string>
+    <string name="user">User</string>
+    <string name="details">Details</string>
+
 </resources>

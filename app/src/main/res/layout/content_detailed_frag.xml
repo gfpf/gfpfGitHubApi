@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView android:id="@+id/scroll_view"
+                                       xmlns:android="http://schemas.android.com/apk/res/android"
+                                       xmlns:app="http://schemas.android.com/apk/res-auto"
+                                       xmlns:card_view="http://schemas.android.com/tools"
+                                       android:layout_width="match_parent"
+                                       android:layout_height="wrap_content"
+                                       android:scrollbarStyle="insideOverlay">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/nav_header_vertical_spacing"
+            android:animateLayoutChanges="true"
+            app:cardPreventCornerOverlap="true"
+            card_view:cardUseCompatPadding="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:animateLayoutChanges="true"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/user_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/length_300_dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_thumbnail"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start|center_vertical"
+                    android:maxLines="2"
+                    android:minLines="2"
+                    android:padding="@dimen/fab_margin"
+                    android:text="@string/app_name"
+                    android:textAppearance="?attr/textAppearanceSearchResultTitle"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/length_1_dp"
+                    android:layout_marginEnd="@dimen/fab_margin"
+                    android:layout_marginStart="@dimen/fab_margin"
+                    android:background="@android:color/black"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/user_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="start|center_vertical"
+                    android:padding="@dimen/fab_margin"
+                    android:text="@string/app_name"
+                    android:textAppearance="?attr/textAppearanceListItem"
+                    android:textColor="@android:color/black"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/length_1_dp"
+                    android:layout_marginEnd="@dimen/fab_margin"
+                    android:layout_marginStart="@dimen/fab_margin"
+                    android:background="@android:color/black"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_expand_specs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:background="@color/design_default_color_secondary"
+                    android:drawablePadding="@dimen/fab_margin"
+                    android:gravity="start|center_vertical"
+                    android:padding="@dimen/fab_margin"
+                    android:text="@string/details"
+                    android:textColor="@android:color/black"/>
+
+                <LinearLayout
+                    android:id="@+id/view_specs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/user_ghurl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:autoLink="web"
+                        android:gravity="start|center_vertical"
+                        android:padding="@dimen/fab_margin"
+                        android:text="@string/app_name"
+                        android:textAppearance="?attr/textAppearanceListItem"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
