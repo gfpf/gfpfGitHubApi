@@ -109,31 +109,34 @@ public class MainFragment extends Fragment implements
 
                 } else {
                     //No search term
-                    searchPlateEditText.setError(getString(R.string.required_field));
+                    doInitialLoad();
                 }
             }
             return true;
         });
 
-
         mGHUserViewModel = ViewModelProviders.of(this).get(GHUserViewModel.class);
+        doInitialLoad();
 
-        if (savedInstanceState == null) {
-            //Load all users
-            setProgressIndicator(true);
-            mGHUserViewModel.loadAllGHUsers()
-                    .subscribe(result -> {
+    }
 
-                        //Result
-                        if (result != null) {
-                            showGHUserListUI(result, false);
-                        }
+    private void doInitialLoad() {
+        //if (savedInstanceState == null) {
+        //Load all users
+        setProgressIndicator(true);
+        mGHUserViewModel.loadAllGHUsers()
+                .subscribe(result -> {
 
-                    }, throwable -> {
-                        // handle error event
-                        showGHUserListUI(null, true);
-                    });
-        }
+                    //Result
+                    if (result != null) {
+                        showGHUserListUI(result, false);
+                    }
+
+                }, throwable -> {
+                    // handle error event
+                    showGHUserListUI(null, true);
+                });
+        //}
     }
 
     private void doSearch(String searchTerm) {

@@ -14,7 +14,7 @@ import io.reactivex.Single;
 
 public class FakeServiceApiImpl implements ServiceApi {
 
-    private static final ArrayMap<Integer, GHUser> GH_USER_SERVICE_DATA = FakeServiceApiEndpoint.loadAllGHUsers();
+    private static final ArrayMap<Integer, GHUser> GH_USER_SERVICE_DATA = FakeServiceApiClient.loadAllGHUsers();
 
     @Override
     public void createGHUser(GHUser... users) {
@@ -52,6 +52,11 @@ public class FakeServiceApiImpl implements ServiceApi {
         }
 
         return Single.error(new Throwable());
+    }
+
+    @Override
+    public Single<GHUser> loadGHUserById(int id) {
+        return null;
     }
 
     @Override

@@ -4,7 +4,6 @@ buildscript {
     repositories {
         google()
         jcenter()
-        
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.0'
@@ -38,5 +37,6 @@ ext {
     rxJavaVersion = '2.1.9'
     rxAndroidVersion = '2.0.1'
     butterKnifeVersion = '10.0.0'
+    gson = '2.7'
 }
 

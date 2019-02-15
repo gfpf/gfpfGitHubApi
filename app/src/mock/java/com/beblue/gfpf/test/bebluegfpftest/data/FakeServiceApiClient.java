@@ -4,7 +4,7 @@ import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 
 import androidx.collection.ArrayMap;
 
-public class FakeServiceApiEndpoint {
+public class FakeServiceApiClient {
 
     private final static ArrayMap FAKE_GH_USER_SERVICE_DATA;
 

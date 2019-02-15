@@ -33,52 +33,29 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    //private Bundle mSavedInstanceState;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        init(savedInstanceState);
+        init();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (isShowingBack) {
-            //getSupportFragmentManager().popBackStack();
-        } else {
+        if (!isShowingBack) {
             changeFragment(new MainFragment(), false, false);
         }
-
-        /*if (mSavedInstanceState == null) {
-            //Set first fragment
-            changeFragment(new MainFragment(), false, false);
-        }*/
-
     }
 
-    private void init(Bundle savedInstanceState) {
+    private void init() {
         setSupportActionBar(toolbar);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
-
-
-        //mSavedInstanceState = savedInstanceState;
-
-        //ProcessLifecycleOwner.get().getLifecycle().addObserver(new AppLifecycleListener());
-
-
-        /*if (savedInstanceState == null) {
-            //Set first fragment
-            changeFragment(new MainFragment(), false, false);
-        }*/
-
-        //changeFragment(new MainFragment(), false, false);
 
         updateAndroidSecurityProvider(this);
     }
@@ -123,9 +100,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
     public void changeFragment(Fragment fragmentTo, boolean isToBackStack, boolean isCustomAnimation) {
-        /*if (isFabOpen) {
-            closeFABOptions();
-        }*/
 
         if (isToBackStack) {
             if (isCustomAnimation) {
@@ -162,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     @Override
     public void onBackPressed() {
+
         if (isShowingBack) {
             getSupportFragmentManager().popBackStack();
         } else {
