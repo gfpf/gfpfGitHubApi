@@ -1,14 +1,18 @@
 package com.beblue.gfpf.test.bebluegfpftest.user.view;
 
+import android.app.Dialog;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.beblue.gfpf.test.bebluegfpftest.R;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
@@ -22,6 +26,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.relex.photodraweeview.PhotoDraweeView;
 
 public class DetailedFragment extends Fragment implements View.OnClickListener {
 
@@ -69,14 +74,37 @@ public class DetailedFragment extends Fragment implements View.OnClickListener {
         mUser = (GHUser) bundle.get(GHUser.REQUESTED_USER_KEY);
 
 
+        //OK
         Picasso.with(getContext())
                 .load(mUser.getAvatarUrl())
                 .placeholder(R.drawable.ic_thumbnail)
                 .into(imgUserPhoto);
 
+        imgUserPhoto.setOnClickListener(v -> showImage(mUser.getAvatarUrl()));
+
         txtUsername.setText(mUser.getName());
         txtUserLogin.setText(mUser.getLogin());
         txtUserGHUrl.setText(mUser.getGHUrl());
+    }
+
+    public void showImage(String photoUri) {
+        Dialog builder = new Dialog(getContext(), android.R.style.Theme_Light);
+        builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        /*builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));*/
+
+        builder.setOnDismissListener(dialogInterface -> {
+            //nothing;
+        });
+
+        PhotoDraweeView imageView = new PhotoDraweeView(getContext());
+        imageView.setPhotoUri(Uri.parse(photoUri));
+
+        builder.addContentView(imageView, new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        builder.show();
     }
 
     @Override

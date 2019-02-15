@@ -1,5 +1,6 @@
 package com.beblue.gfpf.test.bebluegfpftest.data;
 
+import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHSearchUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.service.ServiceApi;
 
@@ -39,15 +40,21 @@ public class FakeServiceApiImpl implements ServiceApi {
     }
 
     @Override
-    public Single<GHUser> searchGHUserByName(String username, String sort, String order) {
+    public Single<GHSearchUser> searchGHUserByName(String username, String sort, String order) {
         for (Map.Entry entry : GH_USER_SERVICE_DATA.entrySet()) {
             GHUser user = (GHUser) entry.getValue();
+
+            List<GHUser> results = new ArrayList<>(1);
+            results.add(user);
+
+            GHSearchUser  searchUser = new GHSearchUser(1, false, user.getName(), results);
+            searchUser.setUsers(results);
 
             String itemName = user.getLogin().trim().toLowerCase();
             username = username.trim().toLowerCase();
 
             if (itemName.equals(username) || itemName.contains(username)) {
-                return Single.just(user);
+                return Single.just(searchUser);
             }
         }
 

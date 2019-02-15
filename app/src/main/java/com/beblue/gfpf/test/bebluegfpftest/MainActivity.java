@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.beblue.gfpf.test.bebluegfpftest.user.view.MainFragment;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -53,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
     private void init() {
+        Fresco.initialize(this);
+
         setSupportActionBar(toolbar);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 

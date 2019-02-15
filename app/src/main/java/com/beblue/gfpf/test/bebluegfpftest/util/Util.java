@@ -12,5 +12,4 @@ public class Util {
         assert imm != null;
         imm.hideSoftInputFromWindow(act.getWindow().getDecorView().getWindowToken(), 0);
     }
-
 }
