@@ -1,5 +1,6 @@
 package com.beblue.gfpf.test.bebluegfpftest.user.data.repository;
 
+import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHSearchUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.service.RetrofitServiceApiClient;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.service.ServiceApi;
@@ -30,7 +31,7 @@ public class GHUserInMemoryRepository implements GHUserRepository {
     }
 
     @Override
-    public Single<GHUser> searchGHUserByName(String name, DisposableSingleObserver<GHUser> callback) {
+    public Single<GHSearchUser> searchGHUserByName(String name, DisposableSingleObserver<GHUser> callback) {
         checkNotNull(name);
 
         //Search user by name
@@ -42,6 +43,13 @@ public class GHUserInMemoryRepository implements GHUserRepository {
 
     @Override
     public Single<List<GHUser>> loadAllGHUsers(DisposableSingleObserver<List<GHUser>> callback) {
+
+        /*List<GHUser> users = (List<GHUser>) mServiceApi.loadAllGHUsers()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+        //.subscribeWith(callback);
+
+        mCachedResults = ImmutableList.copyOf(users);*/
 
         return mServiceApi.loadAllGHUsers()
                 .subscribeOn(Schedulers.io())
@@ -62,6 +70,6 @@ public class GHUserInMemoryRepository implements GHUserRepository {
 
     @Override
     public void refreshData() {
-
+        mCachedResults = null;
     }
 }

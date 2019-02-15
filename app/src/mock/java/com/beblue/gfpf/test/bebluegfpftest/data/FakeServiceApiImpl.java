@@ -56,7 +56,17 @@ public class FakeServiceApiImpl implements ServiceApi {
 
     @Override
     public Single<GHUser> loadGHUserById(int id) {
-        return null;
+        for (Map.Entry entry : GH_USER_SERVICE_DATA.entrySet()) {
+            GHUser user = (GHUser) entry.getValue();
+
+            int itemId = user.getId();
+
+            if (itemId == id) {
+                return Single.just(user);
+            }
+        }
+
+        return Single.error(new Throwable());
     }
 
     @Override

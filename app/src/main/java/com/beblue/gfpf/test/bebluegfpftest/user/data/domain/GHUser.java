@@ -8,10 +8,12 @@ public class GHUser implements Serializable {
 
     public static final String REQUESTED_USER_KEY = "REQUESTED_USER_KEY";
 
-    public GHUser(Integer id, String login, String avatarUrl) {
+    public GHUser(Integer id, String login, String name, String avatarUrl, String ghUrl) {
         mId = id;
         mLogin = login;
+        mName = name;
         mAvatarUrl = avatarUrl;
+        mGHUrl = ghUrl;
     }
 
     @SerializedName("id")

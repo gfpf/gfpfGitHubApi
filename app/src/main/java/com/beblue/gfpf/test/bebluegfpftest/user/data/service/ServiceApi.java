@@ -1,5 +1,6 @@
 package com.beblue.gfpf.test.bebluegfpftest.user.data.service;
 
+import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHSearchUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 
 import java.util.List;
@@ -28,7 +29,7 @@ public interface ServiceApi {
 
     // Fetch a user by username
     @GET("search/users")
-    Single<GHUser> searchGHUserByName(
+    Single<GHSearchUser> searchGHUserByName(
             @Query("q") String username
             , @Query("sort") String sort
             , @Query("order") String order);

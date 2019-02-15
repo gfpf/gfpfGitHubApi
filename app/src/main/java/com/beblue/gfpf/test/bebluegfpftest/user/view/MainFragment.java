@@ -18,11 +18,11 @@ import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
 import com.beblue.gfpf.test.bebluegfpftest.util.Util;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -63,15 +63,17 @@ public class MainFragment extends Fragment implements
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
+    public void updateTitle() {
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.nav_header_search);
     }
 
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
     private void init(Bundle savedInstanceState) {
-        //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.nav_header_search);
+        updateTitle();
 
         // Set up the RecyclerView
         recyclerView.setHasFixedSize(true);
@@ -155,14 +157,11 @@ public class MainFragment extends Fragment implements
         });*/
 
         mGHUserViewModel.searchGHUserByName(searchTerm, false)
-                .subscribe(ghUser -> {
+                .subscribe(ghSearchUser -> {
 
-                    List result = new ArrayList<>();
-                    result.add(ghUser);
-
-                    //Result
-                    if (ghUser != null) {
-                        showGHUserListUI(result, false);
+                    int firstItem = 0;
+                    if (ghSearchUser.getUsers().size() > firstItem) {
+                        showGHUserListUI(ghSearchUser.getUsers(), false);
                     }
 
                 }, throwable -> {

@@ -20,7 +20,7 @@ public interface GHUserContract {
 
     interface UserActionsListener {
 
-        Single<GHUser> searchGHUserByName(String searchTerm, boolean forceUpdate);
+        Single<GHSearchUser> searchGHUserByName(String searchTerm, boolean forceUpdate);
 
         Single<List<GHUser>> loadAllGHUsers();
 

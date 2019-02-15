@@ -15,8 +15,10 @@ import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -99,7 +101,16 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         return super.onOptionsItemSelected(item);
     }
 
-    public void changeFragment(Fragment fragmentTo, boolean isToBackStack, boolean isCustomAnimation) {
+    public void changeFragment(@NonNull Fragment fragmentTo, boolean isToBackStack, boolean isCustomAnimation) {
+
+        //Set Actionbar name
+        /*if (fragmentTo instanceof MainFragment) {
+            getSupportActionBar().setTitle(R.string.nav_header_search);
+
+        } else if (fragmentTo instanceof DetailedFragment) {
+            getSupportActionBar().setTitle(R.string.details);
+        }*/
+
 
         if (isToBackStack) {
             if (isCustomAnimation) {
@@ -159,6 +170,32 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         } else {
             showFABOptions();
         }
+
+        Fragment fragmentTo = getCurrentTopFragment(getSupportFragmentManager());
+
+        if (fragmentTo instanceof MainFragment) {
+            MainFragment mainFragment = (MainFragment) fragmentTo;
+            mainFragment.updateTitle();
+        }
+    }
+
+    public static Fragment getCurrentTopFragment(FragmentManager fm) {
+        int stackCount = fm.getBackStackEntryCount();
+
+        if (stackCount > 0) {
+            FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(stackCount - 1);
+            return fm.findFragmentByTag(backEntry.getName());
+        } else {
+            List<Fragment> fragments = fm.getFragments();
+            if (fragments.size() > 0) {
+                for (Fragment f : fragments) {
+                    if (f != null && !f.isHidden()) {
+                        return f;
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private void hideFABOptions() {

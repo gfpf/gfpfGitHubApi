@@ -3,6 +3,7 @@ package com.beblue.gfpf.test.bebluegfpftest.user;
 import android.app.Application;
 
 import com.beblue.gfpf.test.bebluegfpftest.Injection;
+import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHSearchUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.repository.GHUserRepository;
@@ -25,7 +26,7 @@ public class GHUserViewModel extends AndroidViewModel implements GHUserContract.
     }
 
     @Override
-    public Single<GHUser> searchGHUserByName(String searchTerm, boolean forceUpdate) {
+    public Single<GHSearchUser> searchGHUserByName(String searchTerm, boolean forceUpdate) {
         if (forceUpdate) {
             mGHUserRepository.refreshData();
         }
