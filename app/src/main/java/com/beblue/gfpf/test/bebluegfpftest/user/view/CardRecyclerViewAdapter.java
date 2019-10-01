@@ -48,7 +48,7 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
 
             //User image
             if (user != null) {
-                Picasso.with(mContext)
+                Picasso.get()
                         .load(user.getAvatarUrl())
                         .placeholder(R.drawable.ic_thumbnail)
                         //.resize(150, 150)

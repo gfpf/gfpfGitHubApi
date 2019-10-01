@@ -75,7 +75,7 @@ public class DetailedFragment extends Fragment implements View.OnClickListener {
 
 
         //OK
-        Picasso.with(getContext())
+        Picasso.get()
                 .load(mUser.getAvatarUrl())
                 .placeholder(R.drawable.ic_thumbnail)
                 .into(imgUserPhoto);
