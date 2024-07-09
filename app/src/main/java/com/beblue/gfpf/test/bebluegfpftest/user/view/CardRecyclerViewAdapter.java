@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.beblue.gfpf.test.bebluegfpftest.R;
+import com.beblue.gfpf.test.bebluegfpftest.databinding.CardItemBinding;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.squareup.picasso.Picasso;
 
@@ -36,8 +37,9 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item, parent, false);
-        return new CardViewHolder(layoutView, mRecyclerViewClickListener);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        CardItemBinding itemBinding = CardItemBinding.inflate(layoutInflater, parent, false);
+        return new CardViewHolder(itemBinding, mRecyclerViewClickListener);
     }
 
     @Override

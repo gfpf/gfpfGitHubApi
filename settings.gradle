@@ -1,1 +1,31 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        jcenter()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven { url "https://jitpack.io" }
+    }
+}
+
+rootProject.name = getProjectName()
+
+def getProjectName() {
+    try {
+        def stringsFile = file("./src/main/res/values/string.xml")
+        return new groovy.xml.XmlParser().parse(stringsFile).string.find { it.@name.equals 'app_name' }.text()
+    }catch(e){
+        println(e)
+        return "GitHubApi"
+    }
+}
+
 include ':app'

@@ -1,53 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:card_view="http://schemas.android.com/tools"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:cardPreventCornerOverlap="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    card_view:cardUseCompatPadding="true"
-    tools:context=".MainActivity"
-    tools:showIn="@layout/activity_main">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/tools"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:cardPreventCornerOverlap="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        card_view:cardUseCompatPadding="true"
+        tools:context=".MainActivity"
+        tools:showIn="@layout/activity_main">
 
-        <SearchView
-            android:id="@+id/search_view"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:imeOptions="actionSearch"/>
-        
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/search_view"
-            android:scrollbarStyle="insideInset"
-            android:visibility="gone"
-            tools:listitems="@layout/card_item"/>
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/results_label"
-            style="@android:style/TextAppearance.Large"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/no_results"
-            android:visibility="visible"/>
+            <SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:imeOptions="actionSearch" />
 
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/search_view"
+                android:scrollbarStyle="insideInset"
+                android:visibility="gone"
+                tools:listitems="@layout/card_item" />
+
+            <TextView
+                android:id="@+id/results_label"
+                style="@android:style/TextAppearance.Large"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/no_results"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
 
 
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

@@ -7,13 +7,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.beblue.gfpf.test.bebluegfpftest.databinding.ActivityMainBinding;
 import com.beblue.gfpf.test.bebluegfpftest.user.view.MainFragment;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
@@ -21,26 +21,20 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        // Inflate the layout using DataBindingUtil
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         init();
     }
 
@@ -56,10 +50,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     private void init() {
         Fresco.initialize(this);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.toolbar);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+        binding.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
 
         updateAndroidSecurityProvider(this);
@@ -202,10 +196,10 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
     private void hideFABOptions() {
-        fab.setVisibility(View.GONE);
+        binding.fab.setVisibility(View.GONE);
     }
 
     private void showFABOptions() {
-        fab.setVisibility(View.VISIBLE);
+        binding.fab.setVisibility(View.VISIBLE);
     }
 }

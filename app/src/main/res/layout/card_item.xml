@@ -1,57 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                   xmlns:app="http://schemas.android.com/apk/res-auto"
-                                   xmlns:card_view="http://schemas.android.com/tools"
-                                   android:layout_width="match_parent"
-                                   android:layout_height="@dimen/nav_header_height"
-                                   android:foreground="?android:attr/selectableItemBackground"
-                                   app:cardPreventCornerOverlap="true"
-                                   card_view:cardUseCompatPadding="true">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
+    <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/nav_header_height"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardPreventCornerOverlap="true"
+        card_view:cardUseCompatPadding="true">
 
-        <LinearLayout
-            android:id="@+id/image_section"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/ghuser_image"
-                android:layout_width="@dimen/length_96_dp"
-                android:layout_height="@dimen/length_96_dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_thumbnail"/>
-
-            <TextView
-                android:id="@+id/ghuser_name"
-                style="@android:style/TextAppearance.Small"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:maxLines="3"/>
-
-        </LinearLayout>
-
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@id/image_section"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:padding="@dimen/fab_margin">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/ghuser_html_url"
-                style="@android:style/TextAppearance.Large"
+            <LinearLayout
+                android:id="@+id/image_section"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:autoLink="web"/>
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
-        </LinearLayout>
-    </RelativeLayout>
-</androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/ghuser_image"
+                    android:layout_width="@dimen/length_96_dp"
+                    android:layout_height="@dimen/length_96_dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_thumbnail" />
+
+                <TextView
+                    android:id="@+id/ghuser_name"
+                    style="@android:style/TextAppearance.Small"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:maxLines="3" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toRightOf="@id/image_section"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:padding="@dimen/fab_margin">
+
+                <TextView
+                    android:id="@+id/ghuser_html_url"
+                    style="@android:style/TextAppearance.Large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoLink="web" />
+
+            </LinearLayout>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

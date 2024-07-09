@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.beblue.gfpf.test.bebluegfpftest.MainActivity;
 import com.beblue.gfpf.test.bebluegfpftest.R;
+import com.beblue.gfpf.test.bebluegfpftest.databinding.ContentMainFragBinding;
 import com.beblue.gfpf.test.bebluegfpftest.user.GHUserViewModel;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
@@ -37,34 +38,26 @@ public class MainFragment extends Fragment implements
 
     public static final String MAIN_FRAGMENT_TAG = MainFragment.class.getSimpleName();
 
-    @BindView(R.id.search_view)
-    SearchView searchView;
-
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
-
-    @BindView(R.id.results_label)
-    TextView resultsLabel;
+    private ContentMainFragBinding binding;
 
     private GHUserViewModel mGHUserViewModel;
     private CardRecyclerViewAdapter mAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.content_main_frag, container, false);
-        ButterKnife.bind(this, rootView);
-
+        binding = ContentMainFragBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
         init(savedInstanceState);
-
         return rootView;
-
     }
 
     public void updateTitle() {
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.nav_header_search);
+        //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.nav_header_search);
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (activity != null && activity.getSupportActionBar() != null) {
+            activity.getSupportActionBar().setTitle(R.string.nav_header_search);
+        }
     }
 
     @Override
@@ -76,29 +69,29 @@ public class MainFragment extends Fragment implements
         updateTitle();
 
         // Set up the RecyclerView
-        recyclerView.setHasFixedSize(true);
-        //recyclerView.setItemAnimator();
+        binding.recyclerView.setHasFixedSize(true);
+        //binding.recyclerView.setItemAnimator();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recyclerView.setLayoutManager(layoutManager);
+        binding.recyclerView.setLayoutManager(layoutManager);
 
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.nav_header_vertical_spacing);
         CardItemDecoration itemDecoration = new CardItemDecoration(smallPadding, smallPadding);
-        recyclerView.addItemDecoration(itemDecoration);
+        binding.recyclerView.addItemDecoration(itemDecoration);
 
         //Adapter
         if (mAdapter == null) {
             mAdapter = new CardRecyclerViewAdapter(getContext(), this);
         } else {
-            resultsLabel.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            binding.resultsLabel.setVisibility(View.GONE);
+            binding.recyclerView.setVisibility(View.VISIBLE);
         }
-        recyclerView.setAdapter(mAdapter);
+        binding.recyclerView.setAdapter(mAdapter);
 
-        int searchViewPlateId = searchView.getContext().getResources()
+        int searchViewPlateId = binding.searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
 
-        EditText searchPlateEditText = searchView.findViewById(searchViewPlateId);
+        EditText searchPlateEditText = binding.searchView.findViewById(searchViewPlateId);
         searchPlateEditText.setOnEditorActionListener((v, actionId, event) -> {
 
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -174,10 +167,10 @@ public class MainFragment extends Fragment implements
     @Override
     public void setProgressIndicator(boolean isActive) {
         if (isActive) {
-            progressBar.setVisibility(View.VISIBLE);
-            resultsLabel.setVisibility(View.GONE);
+            binding.progressBar.setVisibility(View.VISIBLE);
+            binding.resultsLabel.setVisibility(View.GONE);
         } else {
-            progressBar.setVisibility(View.GONE);
+            binding.progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -191,11 +184,11 @@ public class MainFragment extends Fragment implements
         setProgressIndicator(false);
 
         if (users == null || users.isEmpty()) {
-            resultsLabel.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
+            binding.resultsLabel.setVisibility(View.VISIBLE);
+            binding.recyclerView.setVisibility(View.GONE);
         } else {
-            resultsLabel.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
+            binding.resultsLabel.setVisibility(View.GONE);
+            binding.recyclerView.setVisibility(View.VISIBLE);
 
             if (isAppend) {
                 mAdapter.appendData(users);
@@ -204,7 +197,6 @@ public class MainFragment extends Fragment implements
                 mAdapter.replaceData(users);
             }
         }
-
         //progressBar.setVisibility(View.GONE);
 
     }
