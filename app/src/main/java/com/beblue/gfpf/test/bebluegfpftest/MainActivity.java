@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         updateAndroidSecurityProvider(this);
     }
 
+    //TODO GFPF - Remove this method
     //Routine to avoid 'SSL Hand Shake Exception' in devices under API 19 (KitKat)
     //https://stackoverflow.com/questions/29916962/javax-net-ssl-sslhandshakeexception-javax-net-ssl-sslprotocolexception-ssl-han
     private void updateAndroidSecurityProvider(Activity callingActivity) {
@@ -99,23 +100,11 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
     public void changeFragment(@NonNull Fragment fragmentTo, boolean isToBackStack, boolean isCustomAnimation) {
-
-        //Set Actionbar name
-        /*if (fragmentTo instanceof MainFragment) {
-            getSupportActionBar().setTitle(R.string.nav_header_search);
-
-        } else if (fragmentTo instanceof DetailedFragment) {
-            getSupportActionBar().setTitle(R.string.details);
-        }*/
-
-
         if (isToBackStack) {
             if (isCustomAnimation) {
-
                 Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(MainFragment.MAIN_FRAGMENT_TAG);
-
                 getSupportFragmentManager().beginTransaction()
-                        .hide(currentFragment)
+                        .hide(Objects.requireNonNull(currentFragment))
                         .setCustomAnimations(
                                 R.animator.card_flip_right_in, R.animator.card_flip_right_out,
                                 R.animator.card_flip_left_in, R.animator.card_flip_left_out)
@@ -144,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
 
     @Override
     public void onBackPressed() {
-
         if (isShowingBack) {
             getSupportFragmentManager().popBackStack();
         } else {
@@ -158,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         invalidateOptionsMenu();
 
         int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-
         isShowingBack = (backStackEntryCount > 0);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(isShowingBack);
 
@@ -169,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
         }
 
         Fragment fragmentTo = getCurrentTopFragment(getSupportFragmentManager());
-
         if (fragmentTo instanceof MainFragment) {
             MainFragment mainFragment = (MainFragment) fragmentTo;
             mainFragment.updateTitle();
@@ -184,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             return fm.findFragmentByTag(backEntry.getName());
         } else {
             List<Fragment> fragments = fm.getFragments();
-            if (fragments.size() > 0) {
+            if (!fragments.isEmpty()) {
                 for (Fragment f : fragments) {
                     if (f != null && !f.isHidden()) {
                         return f;

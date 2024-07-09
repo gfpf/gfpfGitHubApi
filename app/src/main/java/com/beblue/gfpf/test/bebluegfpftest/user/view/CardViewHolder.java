@@ -16,12 +16,9 @@ import butterknife.ButterKnife;
 
 public class CardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    private final CardItemBinding binding;
-    public ImageView image;
-    public TextView name;
-    public TextView htmlUrl;
+    final CardItemBinding binding;
 
-    private RecyclerViewClickListener mRecyclerViewClickListener;
+    private final RecyclerViewClickListener mRecyclerViewClickListener;
 
     public CardViewHolder(@NonNull CardItemBinding binding, RecyclerViewClickListener recyclerViewClickListener) {
         super(binding.getRoot());
@@ -29,9 +26,9 @@ public class CardViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         this.mRecyclerViewClickListener = recyclerViewClickListener;
 
         // Initialize views from the binding object
-        image = binding.ghuserImage;
+        /*image = binding.ghuserImage;
         name = binding.ghuserName;
-        htmlUrl = binding.ghuserHtmlUrl;
+        htmlUrl = binding.ghuserHtmlUrl;*/
 
         itemView.setOnClickListener(this);
     }

@@ -15,10 +15,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.beblue.gfpf.test.bebluegfpftest.R;
+import com.beblue.gfpf.test.bebluegfpftest.databinding.ContentDetailedFragBinding;
+import com.beblue.gfpf.test.bebluegfpftest.databinding.ContentMainFragBinding;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -30,42 +35,24 @@ import me.relex.photodraweeview.PhotoDraweeView;
 
 public class DetailedFragment extends Fragment implements View.OnClickListener {
 
+    private ContentDetailedFragBinding binding;
+
     private GHUserContract.UserActionsListener mActionsListener;
 
     private GHUser mUser;
 
-    @BindView(R.id.user_photo)
-    ImageView imgUserPhoto;
-
-    @BindView(R.id.user_name)
-    AppCompatTextView txtUsername;
-
-    @BindView(R.id.user_login)
-    AppCompatTextView txtUserLogin;
-
-    @BindView(R.id.user_ghurl)
-    AppCompatTextView txtUserGHUrl;
-
-    @BindView(R.id.view_specs)
-    View viewSpecs;
-
-    @BindView(R.id.btn_expand_specs)
-    AppCompatButton btnExpandSpecs;
-
-    @BindView(R.id.scroll_view)
-    NestedScrollView scrollView;
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.content_detailed_frag, container, false);
-        ButterKnife.bind(this, rootView);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.details);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = ContentDetailedFragBinding.inflate(inflater, container, false);
+        View rootView = binding.getRoot();
 
-        btnExpandSpecs.setOnClickListener(this);
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.details);
+
+        binding.btnExpandSpecs.setOnClickListener(this);
 
         showRequestedItem();
 
-        scrollView.fullScroll(View.FOCUS_UP);
+        binding.scrollView.fullScroll(View.FOCUS_UP);
         return rootView;
     }
 
@@ -73,22 +60,18 @@ public class DetailedFragment extends Fragment implements View.OnClickListener {
         Bundle bundle = getArguments();
         mUser = (GHUser) bundle.get(GHUser.REQUESTED_USER_KEY);
 
-
-        //OK
         Picasso.get()
                 .load(mUser.getAvatarUrl())
                 .placeholder(R.drawable.ic_thumbnail)
-                .into(imgUserPhoto);
-
-        imgUserPhoto.setOnClickListener(v -> showImage(mUser.getAvatarUrl()));
-
-        txtUsername.setText(mUser.getName());
-        txtUserLogin.setText(mUser.getLogin());
-        txtUserGHUrl.setText(mUser.getGHUrl());
+                .into(binding.userPhoto);
+        binding.userPhoto.setOnClickListener(v -> showImage(mUser.getAvatarUrl()));
+        binding.userName.setText(mUser.getName());
+        binding.userLogin.setText(mUser.getLogin());
+        binding.userGhurl.setText(mUser.getGHUrl());
     }
 
     public void showImage(String photoUri) {
-        Dialog builder = new Dialog(getContext(), android.R.style.Theme_Light);
+        Dialog builder = new Dialog(requireContext(), android.R.style.Theme_Light);
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         /*builder.getWindow().setBackgroundDrawable(
@@ -110,49 +93,39 @@ public class DetailedFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int id = v.getId();
-
-        switch (id) {
-            case R.id.btn_expand_specs:
-                if (viewSpecs.getVisibility() == View.GONE) {
-                    viewSpecs.setVisibility(View.VISIBLE);
-                    //scrollView.scrollTo(0, scrollView.getBottom());
-
-                    //scroll();
-
-                    //expand(viewSpecs);
-                } else {
-                    viewSpecs.setVisibility(View.GONE);
-                    //collapse(viewSpecs);
-                }
-                break;
+        if (id == R.id.btn_expand_specs) {
+            if (binding.viewSpecs.getVisibility() == View.GONE) {
+                binding.viewSpecs.setVisibility(View.VISIBLE);
+                //binding.scrollView.scrollTo(0, binding.scrollView.getBottom());
+                //scroll();
+                //expand(viewSpecs);
+            } else {
+                binding.viewSpecs.setVisibility(View.GONE);
+                //collapse(viewSpecs);
+            }
         }
 
     }
 
     public void scroll() {
-        scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        binding.scrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                final int scrollViewHeight = scrollView.getHeight();
+                final int scrollViewHeight = binding.scrollView.getHeight();
                 if (scrollViewHeight > 0) {
+                    binding.scrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
-                    //TODO IMPLEMENT THE ELSE SCENARIO
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        scrollView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    }
-
-                    final View lastView = scrollView.getChildAt(scrollView.getChildCount() - 1);
-                    final int lastViewBottom = lastView.getBottom() + scrollView.getPaddingBottom();
-                    final int deltaScrollY = lastViewBottom - scrollViewHeight - scrollView.getScrollY();
+                    final View lastView = binding.scrollView.getChildAt(binding.scrollView.getChildCount() - 1);
+                    final int lastViewBottom = lastView.getBottom() + binding.scrollView.getPaddingBottom();
+                    final int deltaScrollY = lastViewBottom - scrollViewHeight - binding.scrollView.getScrollY();
                     /* If you want to see the scroll animation, call this. */
-                    //scrollView.smoothScrollBy(0, deltaScrollY);
-                    scrollView.smoothScrollTo(0, deltaScrollY);
+                    //binding.scrollView.smoothScrollBy(0, deltaScrollY);
+                    binding.scrollView.smoothScrollTo(0, deltaScrollY);
                     /* If you don't want, call this. */
-                    //scrollView.scrollBy(0, deltaScrollY);
+                    //binding.scrollView.scrollBy(0, deltaScrollY);
                 }
             }
         });
-
     }
 
     public static void expand(final View v) {

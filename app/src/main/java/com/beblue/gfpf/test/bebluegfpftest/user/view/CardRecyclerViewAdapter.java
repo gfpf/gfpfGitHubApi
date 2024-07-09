@@ -24,9 +24,9 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
         void recyclerViewListClicked(View v, int position);
     }
 
-    private Context mContext;
+    private final Context mContext;
     private List<GHUser> mUsers = new ArrayList<>();
-    private RecyclerViewClickListener mRecyclerViewClickListener;
+    private final RecyclerViewClickListener mRecyclerViewClickListener;
 
     public CardRecyclerViewAdapter(Context context, RecyclerViewClickListener recyclerViewClickListener) {
         mContext = context;
@@ -55,13 +55,13 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
                         .placeholder(R.drawable.ic_thumbnail)
                         //.resize(150, 150)
                         //.centerCrop()
-                        .into(holder.image);
+                        .into(holder.binding.ghuserImage);
 
                 //User name
-                holder.name.setText(user.getLogin());
+                holder.binding.ghuserName.setText(user.getLogin());
 
                 //Git hub url
-                holder.htmlUrl.setText(user.getGHUrl());
+                holder.binding.ghuserHtmlUrl.setText(user.getGHUrl());
             }
         }
     }

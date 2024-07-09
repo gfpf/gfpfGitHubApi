@@ -44,7 +44,7 @@ public class MainFragment extends Fragment implements
     private CardRecyclerViewAdapter mAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = ContentMainFragBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
         init(savedInstanceState);
@@ -135,7 +135,7 @@ public class MainFragment extends Fragment implements
     }
 
     private void doSearch(String searchTerm) {
-        Util.hideKeyboard(Objects.requireNonNull(getActivity()));
+        Util.hideKeyboard(requireActivity());
         setProgressIndicator(true);
 
         //TODO Use observe method with LiveData only
