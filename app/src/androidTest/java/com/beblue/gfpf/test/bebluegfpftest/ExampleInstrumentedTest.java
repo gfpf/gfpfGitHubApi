@@ -21,11 +21,7 @@ public class ExampleInstrumentedTest {
     private static final String TAG = "ExampleInstrumentedTest";
 
     @Test
-    public void useAppContext() {
-        // Context of the app under test.
-        //Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        //assertEquals("com.beblue.gfpf.test.bebluegfpftest", appContext.getPackageName());
-
+    public void useAppContextApp() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 

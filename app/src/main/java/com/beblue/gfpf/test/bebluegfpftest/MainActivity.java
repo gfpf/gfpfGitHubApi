@@ -41,10 +41,17 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d("GFPF", "-onStart -MainActivity");
 
         if (!isShowingBack) {
             changeFragment(new MainFragment(), false, false);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("GFPF", "-onResume -MainActivity");
     }
 
     private void init() {
@@ -95,37 +102,30 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
             case R.id.action_settings:
                 return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     public void changeFragment(@NonNull Fragment fragmentTo, boolean isToBackStack, boolean isCustomAnimation) {
+        Fragment existingFragment = getSupportFragmentManager().findFragmentByTag(fragmentTo.getClass().getSimpleName());
+        if (existingFragment != null && existingFragment.isVisible()) {
+            // Fragment already exists and is visible, no need to add it again
+            return;
+        }
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (isToBackStack) {
             if (isCustomAnimation) {
-                Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(MainFragment.MAIN_FRAGMENT_TAG);
-                getSupportFragmentManager().beginTransaction()
-                        .hide(Objects.requireNonNull(currentFragment))
-                        .setCustomAnimations(
-                                R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                                R.animator.card_flip_left_in, R.animator.card_flip_left_out)
-                        .add(R.id.view_holder_container, fragmentTo)
-                        //.replace(R.id.view_holder_container, fragmentTo)
-                        .addToBackStack(null)
-                        .commit();
-            } else {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.view_holder_container, fragmentTo)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .addToBackStack(null)
-                        .commit();
+                transaction.setCustomAnimations(
+                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
+                        R.animator.card_flip_left_in, R.animator.card_flip_left_out
+                );
             }
+            transaction.replace(R.id.view_holder_container, fragmentTo)
+                    .addToBackStack(null);
         } else {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.view_holder_container, fragmentTo, MainFragment.MAIN_FRAGMENT_TAG)
-                    //.replace(R.id.view_holder_container, fragmentTo)
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .commit();
+            transaction.replace(R.id.view_holder_container, fragmentTo, MainFragment.MAIN_FRAGMENT_TAG);
         }
+        transaction.commit();
     }
 
     private boolean isShowingBack;

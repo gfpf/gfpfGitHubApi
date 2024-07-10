@@ -2,6 +2,7 @@ package com.beblue.gfpf.test.bebluegfpftest.user.view;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,18 @@ public class MainFragment extends Fragment implements
         if (activity != null && activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(R.string.nav_header_search);
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("GFPF", "-onStart -MainFragment -DataCount: " + mAdapter.getItemCount());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("GFPF", "-onResume -MainFragment -DataCount: " + mAdapter.getItemCount());
     }
 
     @Override
@@ -198,7 +211,6 @@ public class MainFragment extends Fragment implements
             }
         }
         //progressBar.setVisibility(View.GONE);
-
     }
 
     @Override
