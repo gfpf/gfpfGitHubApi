@@ -17,6 +17,7 @@ import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
 import com.beblue.gfpf.test.bebluegfpftest.util.ProgressBarManager;
 import com.beblue.gfpf.test.bebluegfpftest.util.Util;
 
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainFragment extends Fragment implements
         GHUserContract.View
@@ -39,8 +44,13 @@ public class MainFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = ContentMainFragBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
-        initSetup();
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initSetup();
     }
 
     public void updateTitle() {
@@ -62,8 +72,8 @@ public class MainFragment extends Fragment implements
 
         // Keep checking to avoid refresh search results
         // Must swipe to refresh content
-        if (mAdapter.isEmpty())
-            doLoadAll();
+        /*if (mAdapter.isEmpty())
+            doLoadAll();*/
     }
 
     @Override
@@ -93,7 +103,6 @@ public class MainFragment extends Fragment implements
         ProgressBarManager.init(binding.swipeRefresh);
         // Update the progress position if needed
         //ProgressBarManager.getInstance().updateProgressPosition(Offset.Center);
-
     }
 
     private void setupRecyclerView() {
@@ -111,11 +120,14 @@ public class MainFragment extends Fragment implements
         //Adapter
         if (mAdapter == null) {
             mAdapter = new CardRecyclerViewAdapter(getContext(), this);
+            binding.recyclerView.setAdapter(mAdapter);
+            // Load data initially
+            doLoadAll();
         } else {
-            //binding.noResultsLabel.setVisibility(View.GONE);
-            //binding.recyclerView.setVisibility(View.VISIBLE);
-        } //TODO GFPF - IS OK TO CREATE THE 'VIEWS' AGAIN BUT NOT THE 'OBJECTS' LIKE THE 'ADAPTER'?
-        binding.recyclerView.setAdapter(mAdapter);
+            binding.recyclerView.setAdapter(mAdapter);
+            showGHUserListUI(mAdapter.getItems(), false);
+        }
+        //TODO GFPF - IS OK TO CREATE THE 'VIEWS' AGAIN BUT NOT THE 'OBJECTS' LIKE THE 'ADAPTER'?
     }
 
     private void setupSearchView() {
@@ -132,8 +144,9 @@ public class MainFragment extends Fragment implements
                     //Text entered
                     doSearch(searchTerm);
                 } else {
+                    //TODO GFPF - Show error message on textview
                     //No search term
-                    doLoadAll();
+                    //doLoadAll();
                 }
             }
             return true;
@@ -143,73 +156,59 @@ public class MainFragment extends Fragment implements
     private void doLoadAll() {
         setProgressIndicator(true);
 
-        mGHUserViewModel.loadAllGHUsers()
-                .subscribe(result -> {
-
-                    //Result
-                    if (result != null) {
-                        showGHUserListUI(result, false);
-                    }
-
-                }, throwable -> {
-                    // handle error event
-                    showGHUserListUI(null, true);
-                });
-        //}
+        //TODO GFPF - REMOVE SLEEP
+        Disposable subscribe = Observable.fromCallable(() -> {
+                    Thread.sleep(2000); // Simulate delay
+                    return mGHUserViewModel.loadAllGHUsers().blockingGet(); // Blocking call to get the result
+                })
+                .subscribeOn(Schedulers.io()) // Run on background thread
+                .observeOn(AndroidSchedulers.mainThread()) // Observe on main thread
+                .subscribe(
+                        result -> {
+                            if (result != null) {
+                                showGHUserListUI(result, false);
+                            }
+                            setProgressIndicator(false); // Hide progress indicator
+                        }, throwable -> {
+                            // handle error event
+                            showGHUserListUI(null, true);
+                            setProgressIndicator(false); // Hide progress indicator
+                        });
     }
 
     private void doSearch(String searchTerm) {
+        //TODO GFPF - Start using LiveData to update the UI
         Util.hideKeyboard(requireActivity());
         setProgressIndicator(true);
 
-        //TODO Use observe method with LiveData only
-        /*mGHUserViewModel.searchRepositoryByName(searchTerm, false).observe(this, new Observer<List<GHUser>>() {
-            @Override
-            public void onChanged(List<GHUser> ghEntities) {
-                //Update RecyclerView
-                Toast.makeText(getActivity(), "onChanged", Toast.LENGTH_SHORT).show();
-                mAdapter.replaceData(ghEntities);
-            }
-
-        });*/
-
-        mGHUserViewModel.searchGHUserByName(searchTerm, false)
-                .subscribe(ghSearchUser -> {
-
-                    int firstItem = 0;
-                    if (ghSearchUser.getUsers().size() > firstItem) {
-                        showGHUserListUI(ghSearchUser.getUsers(), false);
-                    }
-
-                }, throwable -> {
-                    // handle error event
-                    showGHUserListUI(null, true);
-                });
-    }
-
-
-    @Override
-    public void setProgressIndicator(boolean isActive) {
-        //todo gfpf - simplify that
-        if (isActive) {
-            ProgressBarManager.getInstance().showProgress();
-            //binding.swipeRefresh.setRefreshing(true);
-            //binding.progressBar.setVisibility(View.VISIBLE);
-        } else {
-            ProgressBarManager.getInstance().hideProgress();
-            //binding.swipeRefresh.setRefreshing(false);
-            //binding.progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void showToastMessage(String message) {
+        //TODO GFPF - REMOVE SLEEP
+        //Disposable disposable = mGHUserViewModel.searchGHUserByName(searchTerm, false)
+        Disposable disposable = Observable.fromCallable(() -> {
+                    Thread.sleep(1000); // Simulate delay
+                    return mGHUserViewModel.searchGHUserByName(searchTerm, false).blockingGet(); // Blocking call to get the result
+                })
+                .subscribeOn(Schedulers.io()) // Run the search operation on IO thread
+                .observeOn(AndroidSchedulers.mainThread()) // Observe results on main thread
+                .subscribe(
+                        ghSearchUser -> {
+                            int firstItem = 0;
+                            if (ghSearchUser.getUsers().size() > firstItem) {
+                                showGHUserListUI(ghSearchUser.getUsers(), false);
+                            } else {
+                                showGHUserListUI(Collections.emptyList(), false); // Empty list case
+                            }
+                            setProgressIndicator(false); // Hide progress indicator
+                        },
+                        throwable -> {
+                            // Handle error event
+                            showGHUserListUI(null, true);
+                            setProgressIndicator(false); // Hide progress indicator
+                        }
+                );
     }
 
     @Override
     public void showGHUserListUI(List<GHUser> users, boolean isAppend) {
-        setProgressIndicator(false);
-
         if (users == null || users.isEmpty()) {
             binding.noResultsLabel.setVisibility(View.VISIBLE);
             binding.recyclerView.setVisibility(View.GONE);
@@ -225,10 +224,40 @@ public class MainFragment extends Fragment implements
         }
     }
 
+    public void recyclerViewListClicked(View v, int position) {
+        doLoadUserById(mAdapter.getItem(position));
+    }
+
+    private void doLoadUserById(GHUser selectedUser) {
+        setProgressIndicator(true);
+
+        //TODO GFPF - REMOVE SLEEP
+        //Disposable disposable = mGHUserViewModel.loadGHUserById(selectedUser.getId())
+        Disposable disposable = Observable.fromCallable(() -> {
+                    Thread.sleep(1000); // Simulate delay
+                    return mGHUserViewModel.loadGHUserById(selectedUser.getId()).blockingGet(); // Blocking call to get the result
+                })
+                .subscribeOn(Schedulers.io()) // Run the load operation on IO thread
+                .observeOn(AndroidSchedulers.mainThread()) // Observe results on main thread
+                .subscribe(
+                        result -> {
+                            if (result != null) {
+                                showGHUserDetailUI(result);
+                            } else {
+                                // Handle null result case if needed
+                            }
+                            setProgressIndicator(false); // Hide progress indicator
+                        },
+                        throwable -> {
+                            // Handle error event
+                            // TODO: Handle this scenario
+                            setProgressIndicator(false); // Hide progress indicator
+                        }
+                );
+    }
+
     @Override
     public void showGHUserDetailUI(@NonNull GHUser requestedUser) {
-        setProgressIndicator(false);
-
         Bundle bundle = new Bundle();
         bundle.putSerializable(GHUser.REQUESTED_USER_KEY, requestedUser);
 
@@ -238,20 +267,17 @@ public class MainFragment extends Fragment implements
         Navigation.findNavController(requireView()).navigate(R.id.action_main_frag_to_detailed_frag, bundle);
     }
 
-    public void recyclerViewListClicked(View v, int position) {
-        GHUser selectedUser = mAdapter.getItem(position);
+    @Override
+    public void setProgressIndicator(boolean isActive) {
+        //todo gfpf - simplify that
+        if (isActive) {
+            ProgressBarManager.getInstance().showProgress();
+        } else {
+            ProgressBarManager.getInstance().hideProgress();
+        }
+    }
 
-        setProgressIndicator(true);
-        mGHUserViewModel.loadGHUserById(selectedUser.getId())
-                .subscribe(result -> {
-                    //Result
-                    if (result != null) {
-                        showGHUserDetailUI(result);
-                    }
-
-                }, throwable -> {
-                    // handle error event
-                    //TODO Handle this scenario
-                });
+    @Override
+    public void showToastMessage(String message) {
     }
 }

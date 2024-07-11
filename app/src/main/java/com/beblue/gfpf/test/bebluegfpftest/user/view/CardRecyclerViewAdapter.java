@@ -79,6 +79,10 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
         return mUsers.get(position);
     }
 
+    public List<GHUser> getItems() {
+        return mUsers;
+    }
+
     public void replaceData(List<GHUser> users) {
         setList(users);
         notifyDataSetChanged();

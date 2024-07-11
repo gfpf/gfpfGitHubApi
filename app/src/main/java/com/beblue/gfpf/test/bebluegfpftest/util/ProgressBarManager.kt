@@ -11,7 +11,8 @@ class ProgressBarManager private constructor(
     private var progressCircleDiameter = 0
     private var selectedOffset: Offset = Offset.Top
 
-    init {
+    // TODO GFPF - Verify why setProgressViewOffset is overriding the isRefreshing property
+    /*init {
         swipeRefreshLayout.viewTreeObserver.addOnGlobalLayoutListener(
             object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
@@ -21,11 +22,12 @@ class ProgressBarManager private constructor(
                 }
             }
         )
-    }
+    }*/
 
     fun updateProgressPosition(offset: Offset) {
         selectedOffset = offset
         val circleOffset = calculateOffset(offset)
+        // TODO GFPF - Verify why setProgressViewOffset is overriding the isRefreshing property
         // Update progress view to be vertically centered based on the calculated circleOffset
         swipeRefreshLayout.setProgressViewOffset(false, 0, circleOffset)
     }
@@ -54,7 +56,7 @@ class ProgressBarManager private constructor(
     companion object {
         @Volatile
         private var instance: ProgressBarManager? = null
-        
+
         @JvmStatic
         fun init(swipeRefreshLayout: SwipeRefreshLayout): ProgressBarManager {
             if (instance == null) {
