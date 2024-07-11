@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/main_fragment">
+    <fragment
+        android:id="@+id/main_fragment"
+        android:name="com.beblue.gfpf.test.bebluegfpftest.user.view.MainFragment"
+        android:label="Main Fragment">
+        <action
+            android:id="@+id/action_main_frag_to_detailed_frag"
+            app:destination="@id/detailed_fragment"
+            app:enterAnim="@animator/card_flip_right_in"
+            app:exitAnim="@animator/card_flip_right_out"
+            app:popEnterAnim="@animator/card_flip_left_in"
+            app:popExitAnim="@animator/card_flip_left_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailed_fragment"
+        android:name="com.beblue.gfpf.test.bebluegfpftest.user.view.DetailedFragment"
+        android:label="Detailed Fragment" />
+</navigation>

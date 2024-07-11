@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.beblue.gfpf.test.bebluegfpftest.databinding.ActivityMainBinding;
-import com.beblue.gfpf.test.bebluegfpftest.user.view.MainFragment;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -16,19 +14,18 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.List;
-import java.util.Objects;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
-public class MainActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
+import com.beblue.gfpf.test.bebluegfpftest.util.FabManager;
+
+public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +39,6 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     protected void onStart() {
         super.onStart();
         Log.d("GFPF", "-onStart -MainActivity");
-
-        if (!isShowingBack) {
-            changeFragment(new MainFragment(), false, false);
-        }
     }
 
     @Override
@@ -55,15 +48,40 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
     }
 
     private void init() {
-        Fresco.initialize(this);
-
         setSupportActionBar(binding.toolbar);
-        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        Fresco.initialize(this);
+        setupNavigation();
 
         binding.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
 
         updateAndroidSecurityProvider(this);
+    }
+
+    private void setupNavigation() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.nav_host_fragment);
+
+        assert navHostFragment != null;
+        navController = navHostFragment.getNavController();
+        NavigationUI.setupActionBarWithNavController(this, navController);
+
+        // Initialize the FabManager
+        FabManager.init(binding.fab);
+
+        // Handle FabManager visibility
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.main_fragment) {
+                FabManager.getInstance().showFab();
+            } else {
+                FabManager.getInstance().hideFab();
+            }
+        });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        return navController.navigateUp() || super.onSupportNavigateUp();
     }
 
     //TODO GFPF - Remove this method
@@ -103,89 +121,5 @@ public class MainActivity extends AppCompatActivity implements FragmentManager.O
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void changeFragment(@NonNull Fragment fragmentTo, boolean isToBackStack, boolean isCustomAnimation) {
-        Fragment existingFragment = getSupportFragmentManager().findFragmentByTag(fragmentTo.getClass().getSimpleName());
-        if (existingFragment != null && existingFragment.isVisible()) {
-            // Fragment already exists and is visible, no need to add it again
-            return;
-        }
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (isToBackStack) {
-            if (isCustomAnimation) {
-                transaction.setCustomAnimations(
-                        R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                        R.animator.card_flip_left_in, R.animator.card_flip_left_out
-                );
-            }
-            transaction.replace(R.id.view_holder_container, fragmentTo)
-                    .addToBackStack(null);
-        } else {
-            transaction.replace(R.id.view_holder_container, fragmentTo, MainFragment.MAIN_FRAGMENT_TAG);
-        }
-        transaction.commit();
-    }
-
-    private boolean isShowingBack;
-    private View.OnClickListener originalToolbarListener;
-
-    @Override
-    public void onBackPressed() {
-        if (isShowingBack) {
-            getSupportFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public void onBackStackChanged() {
-        // When the back stack changes, invalidate the options menu (action bar).
-        invalidateOptionsMenu();
-
-        int backStackEntryCount = getSupportFragmentManager().getBackStackEntryCount();
-        isShowingBack = (backStackEntryCount > 0);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(isShowingBack);
-
-        if (isShowingBack) {
-            hideFABOptions();
-        } else {
-            showFABOptions();
-        }
-
-        Fragment fragmentTo = getCurrentTopFragment(getSupportFragmentManager());
-        if (fragmentTo instanceof MainFragment) {
-            MainFragment mainFragment = (MainFragment) fragmentTo;
-            mainFragment.updateTitle();
-        }
-    }
-
-    public static Fragment getCurrentTopFragment(FragmentManager fm) {
-        int stackCount = fm.getBackStackEntryCount();
-
-        if (stackCount > 0) {
-            FragmentManager.BackStackEntry backEntry = fm.getBackStackEntryAt(stackCount - 1);
-            return fm.findFragmentByTag(backEntry.getName());
-        } else {
-            List<Fragment> fragments = fm.getFragments();
-            if (!fragments.isEmpty()) {
-                for (Fragment f : fragments) {
-                    if (f != null && !f.isHidden()) {
-                        return f;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private void hideFABOptions() {
-        binding.fab.setVisibility(View.GONE);
-    }
-
-    private void showFABOptions() {
-        binding.fab.setVisibility(View.VISIBLE);
     }
 }

@@ -71,6 +71,10 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
         return mUsers.size();
     }
 
+    public boolean isEmpty() {
+        return mUsers.isEmpty();
+    }
+
     public GHUser getItem(int position) {
         return mUsers.get(position);
     }
@@ -85,7 +89,7 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
         notifyDataSetChanged();
     }
 
-    private void setList(List<GHUser> users) {
-        mUsers = checkNotNull(users);
+    private void setList(@NonNull List<GHUser> users) {
+        mUsers = users;
     }
 }

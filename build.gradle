@@ -67,5 +67,6 @@ ext {
     rxAndroidVersion = '2.1.0'
     butterKnifeVersion = '10.2.3'
     gson = '2.7'
+    nav_version = "2.7.7"
 }
 

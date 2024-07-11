@@ -8,11 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.SearchView;
-import android.widget.TextView;
 
-import com.beblue.gfpf.test.bebluegfpftest.MainActivity;
 import com.beblue.gfpf.test.bebluegfpftest.R;
 import com.beblue.gfpf.test.bebluegfpftest.databinding.ContentMainFragBinding;
 import com.beblue.gfpf.test.bebluegfpftest.user.GHUserViewModel;
@@ -21,26 +17,21 @@ import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
 import com.beblue.gfpf.test.bebluegfpftest.util.Util;
 
 import java.util.List;
-import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class MainFragment extends Fragment implements
         GHUserContract.View
         , CardRecyclerViewAdapter.RecyclerViewClickListener {
 
-    public static final String MAIN_FRAGMENT_TAG = MainFragment.class.getSimpleName();
-
     private ContentMainFragBinding binding;
-
     private GHUserViewModel mGHUserViewModel;
     private CardRecyclerViewAdapter mAdapter;
 
@@ -48,13 +39,11 @@ public class MainFragment extends Fragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = ContentMainFragBinding.inflate(inflater, container, false);
         View rootView = binding.getRoot();
-        init(savedInstanceState);
+        initSetup();
         return rootView;
     }
 
     public void updateTitle() {
-        //((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.nav_header_search);
-
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (activity != null && activity.getSupportActionBar() != null) {
             activity.getSupportActionBar().setTitle(R.string.nav_header_search);
@@ -65,6 +54,16 @@ public class MainFragment extends Fragment implements
     public void onStart() {
         super.onStart();
         Log.d("GFPF", "-onStart -MainFragment -DataCount: " + mAdapter.getItemCount());
+
+        //TODO GFPF - Should I do check if the list is empty?
+        //TODO GFPF - Need to scroll up when do new search!
+        //TODO GFPF - Need show error msg when search term is empty!
+        // Even when loading again after back from detail screen, it keeps list's state & the visible items on the screen
+
+        // Keep checking to avoid refresh search results
+        // Must swipe to refresh content
+        if (mAdapter.isEmpty())
+            doInitialLoad();
     }
 
     @Override
@@ -78,9 +77,14 @@ public class MainFragment extends Fragment implements
         super.onViewStateRestored(savedInstanceState);
     }
 
-    private void init(Bundle savedInstanceState) {
+    private void initSetup() {
         updateTitle();
+        setupRecyclerView();
+        setupSearchView();
+        mGHUserViewModel = ViewModelProviders.of(this).get(GHUserViewModel.class);
+    }
 
+    private void setupRecyclerView() {
         // Set up the RecyclerView
         binding.recyclerView.setHasFixedSize(true);
         //binding.recyclerView.setItemAnimator();
@@ -98,9 +102,11 @@ public class MainFragment extends Fragment implements
         } else {
             binding.resultsLabel.setVisibility(View.GONE);
             binding.recyclerView.setVisibility(View.VISIBLE);
-        }
+        } //TODO GFPF - IS OK TO CREATE THE 'VIEWS' AGAIN BUT NOT THE 'OBJECTS' LIKE THE 'ADAPTER'?
         binding.recyclerView.setAdapter(mAdapter);
+    }
 
+    private void setupSearchView() {
         int searchViewPlateId = binding.searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
 
@@ -110,11 +116,9 @@ public class MainFragment extends Fragment implements
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
                 String searchTerm = v.getText().toString();
-
                 if (!TextUtils.isEmpty(searchTerm)) {
                     //Text entered
                     doSearch(searchTerm);
-
                 } else {
                     //No search term
                     doInitialLoad();
@@ -122,10 +126,6 @@ public class MainFragment extends Fragment implements
             }
             return true;
         });
-
-        mGHUserViewModel = ViewModelProviders.of(this).get(GHUserViewModel.class);
-        doInitialLoad();
-
     }
 
     private void doInitialLoad() {
@@ -189,7 +189,6 @@ public class MainFragment extends Fragment implements
 
     @Override
     public void showToastMessage(String message) {
-
     }
 
     @Override
@@ -210,7 +209,6 @@ public class MainFragment extends Fragment implements
                 mAdapter.replaceData(users);
             }
         }
-        //progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -223,7 +221,7 @@ public class MainFragment extends Fragment implements
         DetailedFragment detailedOrderFragment = new DetailedFragment();
         detailedOrderFragment.setArguments(bundle);
 
-        MainActivity.class.cast(getActivity()).changeFragment(detailedOrderFragment, true, true);
+        Navigation.findNavController(requireView()).navigate(R.id.action_main_frag_to_detailed_frag, bundle);
     }
 
     public void recyclerViewListClicked(View v, int position) {
@@ -232,7 +230,6 @@ public class MainFragment extends Fragment implements
         setProgressIndicator(true);
         mGHUserViewModel.loadGHUserById(selectedUser.getId())
                 .subscribe(result -> {
-
                     //Result
                     if (result != null) {
                         showGHUserDetailUI(result);
@@ -242,8 +239,5 @@ public class MainFragment extends Fragment implements
                     // handle error event
                     //TODO Handle this scenario
                 });
-
-
     }
-
 }

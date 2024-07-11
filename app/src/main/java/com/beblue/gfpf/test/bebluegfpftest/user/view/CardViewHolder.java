@@ -24,12 +24,6 @@ public class CardViewHolder extends RecyclerView.ViewHolder implements View.OnCl
         super(binding.getRoot());
         this.binding = binding;
         this.mRecyclerViewClickListener = recyclerViewClickListener;
-
-        // Initialize views from the binding object
-        /*image = binding.ghuserImage;
-        name = binding.ghuserName;
-        htmlUrl = binding.ghuserHtmlUrl;*/
-
         itemView.setOnClickListener(this);
     }
 
