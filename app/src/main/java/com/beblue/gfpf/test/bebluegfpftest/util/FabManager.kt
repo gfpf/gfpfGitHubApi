@@ -4,6 +4,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class FabManager private constructor(private val fab: FloatingActionButton) {
 
+
+    fun showFab() {
+        fab.show()
+    }
+
+    fun hideFab() {
+        fab.hide()
+    }
+
     companion object {
         @Volatile
         private var instance: FabManager? = null
@@ -24,13 +33,5 @@ class FabManager private constructor(private val fab: FloatingActionButton) {
             return instance
                 ?: throw IllegalStateException("FabManager is not initialized")
         }
-    }
-
-    fun showFab() {
-        fab.show()
-    }
-
-    fun hideFab() {
-        fab.hide()
     }
 }

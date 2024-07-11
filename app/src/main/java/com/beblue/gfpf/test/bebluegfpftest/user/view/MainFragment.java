@@ -14,6 +14,7 @@ import com.beblue.gfpf.test.bebluegfpftest.databinding.ContentMainFragBinding;
 import com.beblue.gfpf.test.bebluegfpftest.user.GHUserViewModel;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
+import com.beblue.gfpf.test.bebluegfpftest.util.ProgressBarManager;
 import com.beblue.gfpf.test.bebluegfpftest.util.Util;
 
 import java.util.List;
@@ -23,7 +24,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -63,7 +63,7 @@ public class MainFragment extends Fragment implements
         // Keep checking to avoid refresh search results
         // Must swipe to refresh content
         if (mAdapter.isEmpty())
-            doInitialLoad();
+            doLoadAll();
     }
 
     @Override
@@ -79,9 +79,21 @@ public class MainFragment extends Fragment implements
 
     private void initSetup() {
         updateTitle();
+        setupSwipeRefresh();
         setupRecyclerView();
         setupSearchView();
         mGHUserViewModel = ViewModelProviders.of(this).get(GHUserViewModel.class);
+    }
+
+    private void setupSwipeRefresh() {
+        //Refresh Listener
+        binding.swipeRefresh.setOnRefreshListener(this::doLoadAll);
+
+        // Init ProgressBarManager
+        ProgressBarManager.init(binding.swipeRefresh);
+        // Update the progress position if needed
+        //ProgressBarManager.getInstance().updateProgressPosition(Offset.Center);
+
     }
 
     private void setupRecyclerView() {
@@ -100,8 +112,8 @@ public class MainFragment extends Fragment implements
         if (mAdapter == null) {
             mAdapter = new CardRecyclerViewAdapter(getContext(), this);
         } else {
-            binding.resultsLabel.setVisibility(View.GONE);
-            binding.recyclerView.setVisibility(View.VISIBLE);
+            //binding.noResultsLabel.setVisibility(View.GONE);
+            //binding.recyclerView.setVisibility(View.VISIBLE);
         } //TODO GFPF - IS OK TO CREATE THE 'VIEWS' AGAIN BUT NOT THE 'OBJECTS' LIKE THE 'ADAPTER'?
         binding.recyclerView.setAdapter(mAdapter);
     }
@@ -121,17 +133,16 @@ public class MainFragment extends Fragment implements
                     doSearch(searchTerm);
                 } else {
                     //No search term
-                    doInitialLoad();
+                    doLoadAll();
                 }
             }
             return true;
         });
     }
 
-    private void doInitialLoad() {
-        //if (savedInstanceState == null) {
-        //Load all users
+    private void doLoadAll() {
         setProgressIndicator(true);
+
         mGHUserViewModel.loadAllGHUsers()
                 .subscribe(result -> {
 
@@ -179,11 +190,15 @@ public class MainFragment extends Fragment implements
 
     @Override
     public void setProgressIndicator(boolean isActive) {
+        //todo gfpf - simplify that
         if (isActive) {
-            binding.progressBar.setVisibility(View.VISIBLE);
-            binding.resultsLabel.setVisibility(View.GONE);
+            ProgressBarManager.getInstance().showProgress();
+            //binding.swipeRefresh.setRefreshing(true);
+            //binding.progressBar.setVisibility(View.VISIBLE);
         } else {
-            binding.progressBar.setVisibility(View.GONE);
+            ProgressBarManager.getInstance().hideProgress();
+            //binding.swipeRefresh.setRefreshing(false);
+            //binding.progressBar.setVisibility(View.GONE);
         }
     }
 
@@ -196,15 +211,14 @@ public class MainFragment extends Fragment implements
         setProgressIndicator(false);
 
         if (users == null || users.isEmpty()) {
-            binding.resultsLabel.setVisibility(View.VISIBLE);
+            binding.noResultsLabel.setVisibility(View.VISIBLE);
             binding.recyclerView.setVisibility(View.GONE);
         } else {
-            binding.resultsLabel.setVisibility(View.GONE);
+            binding.noResultsLabel.setVisibility(View.GONE);
             binding.recyclerView.setVisibility(View.VISIBLE);
 
             if (isAppend) {
                 mAdapter.appendData(users);
-
             } else {
                 mAdapter.replaceData(users);
             }

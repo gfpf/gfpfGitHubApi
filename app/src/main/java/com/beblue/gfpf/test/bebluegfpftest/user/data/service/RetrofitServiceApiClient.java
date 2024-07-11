@@ -5,6 +5,7 @@ import android.content.Context;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import androidx.annotation.NonNull;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -17,6 +18,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitServiceApiClient {
 
     public static final String BASE_URL = "https://api.github.com/";
+    private static final String token = "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";
+
     public static final String STARS_SORT_KEY = "stars";
     public static final String DESC_ORDER_KEY = "desc";
     public static final String USERS_URL_PATH_KEY = "users/";
@@ -55,18 +58,15 @@ public class RetrofitServiceApiClient {
         httpClient.addInterceptor(interceptor);
 
         httpClient.addInterceptor(new Interceptor() {
+            @NonNull
             @Override
-            public Response intercept(Chain chain) throws IOException {
+            public Response intercept(@NonNull Chain chain) throws IOException {
                 Request original = chain.request();
                 Request.Builder requestBuilder = original.newBuilder()
+                        //TODO GFPF - Use DataStore to save token
+                        .header("Authorization", "Bearer " + token)
                         .addHeader("Accept", "application/json")
                         .addHeader("Content-Type", "application/json");
-
-                // Adding Authorization token (API Key)
-                // Requests will be denied without API key
-                /*if (!TextUtils.isEmpty(PrefUtils.getApiKey(context))) {
-                    requestBuilder.addHeader("Authorization", PrefUtils.getApiKey(context));
-                }*/
 
                 Request request = requestBuilder.build();
                 return chain.proceed(request);
