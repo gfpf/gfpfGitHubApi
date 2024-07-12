@@ -1,13 +1,15 @@
 package com.beblue.gfpf.test.bebluegfpftest.util
 
-import android.view.ViewTreeObserver
-import android.widget.ProgressBar
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
-class ProgressBarManager private constructor(
-    private val swipeRefreshLayout: SwipeRefreshLayout,
-    //private val progressBar: ProgressBar
+/*class ProgressBarManager private constructor(
+    private var swipeRefreshLayout: SwipeRefreshLayout,
 ) {
+    private var progressCircleDiameter = 0
+    private var selectedOffset: Offset = Offset.Top*/
+
+class ProgressBarManager private constructor() {
+    private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var progressCircleDiameter = 0
     private var selectedOffset: Offset = Offset.Top
 
@@ -24,28 +26,39 @@ class ProgressBarManager private constructor(
         )
     }*/
 
+    fun setSwipeRefreshLayout(swipeRefreshLayout: SwipeRefreshLayout) {
+        synchronized(this) {
+            this.swipeRefreshLayout = swipeRefreshLayout
+            //setupProgressViewOffset()
+        }
+    }
+
     fun updateProgressPosition(offset: Offset) {
         selectedOffset = offset
         val circleOffset = calculateOffset(offset)
         // TODO GFPF - Verify why setProgressViewOffset is overriding the isRefreshing property
         // Update progress view to be vertically centered based on the calculated circleOffset
-        swipeRefreshLayout.setProgressViewOffset(false, 0, circleOffset)
+        swipeRefreshLayout?.setProgressViewOffset(false, 0, circleOffset)
     }
 
     private fun calculateOffset(offset: Offset): Int {
         return when (offset) {
-            Offset.Center -> (swipeRefreshLayout.height - progressCircleDiameter) / 2
-            Offset.Top -> swipeRefreshLayout.height / 8 - progressCircleDiameter / 2
-            Offset.Bottom -> swipeRefreshLayout.height * 2 / 3 - progressCircleDiameter / 2
+            Offset.Center -> (swipeRefreshLayout?.height ?: (0 - progressCircleDiameter)) / 2
+            Offset.Top -> (swipeRefreshLayout?.height ?: 0) / 8 - progressCircleDiameter / 2
+            Offset.Bottom -> (swipeRefreshLayout?.height ?: 0) * 2 / 3 - progressCircleDiameter / 2
         }
     }
 
     fun showProgress() {
-        swipeRefreshLayout.isRefreshing = true
+        synchronized(this) {
+            swipeRefreshLayout?.isRefreshing = true
+        }
     }
 
     fun hideProgress() {
-        swipeRefreshLayout.isRefreshing = false
+        synchronized(this) {
+            swipeRefreshLayout?.isRefreshing = false
+        }
     }
 
     // Enum to represent different offsets
@@ -58,6 +71,16 @@ class ProgressBarManager private constructor(
         private var instance: ProgressBarManager? = null
 
         @JvmStatic
+        fun init(swipeRefreshLayout: SwipeRefreshLayout) {
+            synchronized(this) {
+                if (instance == null) {
+                    instance = ProgressBarManager()
+                }
+                instance?.setSwipeRefreshLayout(swipeRefreshLayout)
+            }
+        }
+
+        /*@JvmStatic
         fun init(swipeRefreshLayout: SwipeRefreshLayout): ProgressBarManager {
             if (instance == null) {
                 synchronized(this) {
@@ -67,7 +90,7 @@ class ProgressBarManager private constructor(
                 }
             }
             return instance!!
-        }
+        }*/
 
         @JvmStatic
         fun getInstance(): ProgressBarManager {
