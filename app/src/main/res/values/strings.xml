@@ -9,4 +9,7 @@
     <string name="search_term_empty">Search term cannot be empty!</string>
     <string name="search_term_min_length">Search term must be at least 3</string>
     <string name="search_hint">Github username…</string>
+    <string name="scroll_up_hint">Uhuuu! Scrolling up!</string>
+    <string name="scroll_up_error">Already at the top!</string>
+
 </resources>

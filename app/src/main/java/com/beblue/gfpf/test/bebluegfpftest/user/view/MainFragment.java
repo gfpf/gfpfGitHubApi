@@ -18,6 +18,7 @@ import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
 import com.beblue.gfpf.test.bebluegfpftest.util.ProgressBarManager;
 import com.beblue.gfpf.test.bebluegfpftest.util.Util;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -101,20 +103,24 @@ public class MainFragment extends Fragment implements
     }
 
     private void setupSwipeRefresh() {
-        //Refresh Listener
-        binding.swipeRefresh.setOnRefreshListener(this::doLoadAll);
-
+        binding.swipeRefresh.setOnRefreshListener(() -> {
+            doLoadAll();
+            clearSearchView();
+            animateSearchView();
+        });
         // Init ProgressBarManager
         ProgressBarManager.init(binding.swipeRefresh);
         // Update the progress position if needed
         //ProgressBarManager.getInstance().updateProgressPosition(Offset.Center);
     }
 
+    private LinearLayoutManager layoutManager;
+
     private void setupRecyclerView() {
         // Set up the RecyclerView
         binding.recyclerView.setHasFixedSize(true);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(layoutManager);
 
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.nav_header_vertical_spacing);
@@ -138,7 +144,17 @@ public class MainFragment extends Fragment implements
             binding.recyclerView.setAdapter(mAdapter);
             showGHUserListUI(mAdapter.getItems(), false);
         }
-        //TODO GFPF - IS OK TO CREATE THE 'VIEWS' AGAIN BUT NOT THE 'OBJECTS' LIKE THE 'ADAPTER'?
+    }
+
+    public void scrollToTop() {
+        if (layoutManager != null) {
+            // Check if the first visible item is at the top
+            if (layoutManager.findFirstVisibleItemPosition() == 0) {
+                Snackbar.make(requireView(), getString(R.string.scroll_up_error), Snackbar.LENGTH_SHORT).show();
+            } else {
+                binding.recyclerView.smoothScrollToPosition(0); // Scrolls to the top position
+            }
+        }
     }
 
     private final int minSearchTermLength = 3;
@@ -168,6 +184,12 @@ public class MainFragment extends Fragment implements
             return true;
         });
         animateSearchView();
+    }
+
+    private void clearSearchView() {
+        binding.searchView.setQuery("", false);
+        binding.searchView.clearFocus();
+        binding.searchView.onActionViewCollapsed();
     }
 
     private void animateSearchView() {

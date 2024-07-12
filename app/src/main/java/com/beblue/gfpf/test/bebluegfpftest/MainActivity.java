@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.beblue.gfpf.test.bebluegfpftest.databinding.ActivityMainBinding;
+import com.beblue.gfpf.test.bebluegfpftest.user.view.MainFragment;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private NavController navController;
+    private MainFragment mainFragment; // Assuming your fragment is named MainFragment
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,11 +53,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         Fresco.initialize(this);
         setupNavigation();
-
-        binding.fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
-
         updateAndroidSecurityProvider(this);
+
+        binding.fab.setOnClickListener(view -> {
+            if (mainFragment != null) {
+                Snackbar.make(view, getString(R.string.scroll_up_hint), Snackbar.LENGTH_SHORT)
+                        .setAction("Action", null).show();
+                mainFragment.scrollToTop(); // Call method in fragment to scroll to top
+            }
+        });
     }
 
     private void setupNavigation() {
@@ -73,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.main_fragment) {
                 FabManager.getInstance().showFab();
+                // Assuming MainFragment is the first fragment in the nav_host_fragment
+                mainFragment = (MainFragment) navHostFragment.getChildFragmentManager().getFragments().get(0);
             } else {
                 FabManager.getInstance().hideFab();
             }
