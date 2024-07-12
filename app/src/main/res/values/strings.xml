@@ -8,4 +8,5 @@
     <string name="details">Details</string>
     <string name="search_term_empty">Search term cannot be empty!</string>
     <string name="search_term_min_length">Search term must be at least 3</string>
+    <string name="search_hint">Github username…</string>
 </resources>

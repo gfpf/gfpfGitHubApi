@@ -3,6 +3,7 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="length_4_dp">4dp</dimen>
+    <dimen name="length_8_dp">8dp</dimen>
     <dimen name="length_96_dp">96dp</dimen>
     <dimen name="length_1_dp">1dp</dimen>
     <dimen name="length_300_dp">300dp</dimen>

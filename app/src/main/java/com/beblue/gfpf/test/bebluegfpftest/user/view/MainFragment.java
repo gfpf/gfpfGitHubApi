@@ -1,11 +1,13 @@
 package com.beblue.gfpf.test.bebluegfpftest.user.view;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
@@ -31,11 +33,9 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import jp.wasabeef.recyclerview.animators.LandingAnimator;
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
 
-import android.view.animation.LayoutAnimationController;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 public class MainFragment extends Fragment implements
         GHUserContract.View
@@ -142,6 +142,7 @@ public class MainFragment extends Fragment implements
     }
 
     private final int minSearchTermLength = 3;
+
     private void setupSearchView() {
         int searchViewPlateId = binding.searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
@@ -166,6 +167,12 @@ public class MainFragment extends Fragment implements
             }
             return true;
         });
+        animateSearchView();
+    }
+
+    private void animateSearchView() {
+        Animation animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce_in_right);
+        binding.searchView.startAnimation(animation);
     }
 
     private void doLoadAll() {

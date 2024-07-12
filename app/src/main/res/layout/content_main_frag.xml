@@ -26,7 +26,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:imeOptions="actionSearch" />
+                    android:layout_marginStart="@dimen/length_8_dp"
+                    android:layout_marginTop="@dimen/length_8_dp"
+                    android:layout_marginEnd="@dimen/length_8_dp"
+                    android:imeOptions="actionSearch"
+                    android:queryHint="@string/search_hint"
+                    android:searchIcon="@android:drawable/ic_menu_myplaces"
+                    android:voiceIcon="@android:drawable/ic_btn_speak_now" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
@@ -45,14 +51,6 @@
                     android:layout_centerInParent="true"
                     android:text="@string/no_results"
                     android:visibility="visible" />
-
-                <!--<ProgressBar
-                    android:id="@+id/progress_bar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:visibility="gone" />-->
-
 
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
