@@ -2,7 +2,6 @@ package com.beblue.gfpf.test.bebluegfpftest.user.view;
 
 import android.app.Dialog;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +10,10 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.beblue.gfpf.test.bebluegfpftest.R;
 import com.beblue.gfpf.test.bebluegfpftest.databinding.ContentDetailedFragBinding;
-import com.beblue.gfpf.test.bebluegfpftest.databinding.ContentMainFragBinding;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
 import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUserContract;
 import com.squareup.picasso.Picasso;
@@ -25,12 +22,7 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import me.relex.photodraweeview.PhotoDraweeView;
 
 public class DetailedFragment extends Fragment implements View.OnClickListener {

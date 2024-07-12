@@ -2,12 +2,6 @@ package com.beblue.gfpf.test.bebluegfpftest.util
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
-/*class ProgressBarManager private constructor(
-    private var swipeRefreshLayout: SwipeRefreshLayout,
-) {
-    private var progressCircleDiameter = 0
-    private var selectedOffset: Offset = Offset.Top*/
-
 class ProgressBarManager private constructor() {
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var progressCircleDiameter = 0
@@ -79,18 +73,6 @@ class ProgressBarManager private constructor() {
                 instance?.setSwipeRefreshLayout(swipeRefreshLayout)
             }
         }
-
-        /*@JvmStatic
-        fun init(swipeRefreshLayout: SwipeRefreshLayout): ProgressBarManager {
-            if (instance == null) {
-                synchronized(this) {
-                    if (instance == null) {
-                        instance = ProgressBarManager(swipeRefreshLayout)
-                    }
-                }
-            }
-            return instance!!
-        }*/
 
         @JvmStatic
         fun getInstance(): ProgressBarManager {

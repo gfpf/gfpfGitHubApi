@@ -31,6 +31,11 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
+
+import android.view.animation.LayoutAnimationController;
+import android.view.animation.AnimationUtils;
 
 public class MainFragment extends Fragment implements
         GHUserContract.View
@@ -108,7 +113,6 @@ public class MainFragment extends Fragment implements
     private void setupRecyclerView() {
         // Set up the RecyclerView
         binding.recyclerView.setHasFixedSize(true);
-        //binding.recyclerView.setItemAnimator();
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(layoutManager);
@@ -116,6 +120,13 @@ public class MainFragment extends Fragment implements
         int smallPadding = getResources().getDimensionPixelSize(R.dimen.nav_header_vertical_spacing);
         CardItemDecoration itemDecoration = new CardItemDecoration(smallPadding, smallPadding);
         binding.recyclerView.addItemDecoration(itemDecoration);
+
+        // Layout animation (RecyclerView)
+        //LayoutAnimationController animController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.anim_fall_down);
+        //binding.recyclerView.setLayoutAnimation(animController);
+
+        // Item animation (CardView)
+        //binding.recyclerView.setItemAnimator(new SlideInDownAnimator());
 
         //Adapter
         if (mAdapter == null) {
@@ -130,23 +141,27 @@ public class MainFragment extends Fragment implements
         //TODO GFPF - IS OK TO CREATE THE 'VIEWS' AGAIN BUT NOT THE 'OBJECTS' LIKE THE 'ADAPTER'?
     }
 
+    private final int minSearchTermLength = 3;
     private void setupSearchView() {
         int searchViewPlateId = binding.searchView.getContext().getResources()
                 .getIdentifier("android:id/search_src_text", null, null);
 
         EditText searchPlateEditText = binding.searchView.findViewById(searchViewPlateId);
-        searchPlateEditText.setOnEditorActionListener((v, actionId, event) -> {
-
+        searchPlateEditText.setOnEditorActionListener((view, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 
-                String searchTerm = v.getText().toString();
+                String searchTerm = view.getText().toString();
                 if (!TextUtils.isEmpty(searchTerm)) {
-                    //Text entered
-                    doSearch(searchTerm);
+                    if (searchTerm.length() >= minSearchTermLength) {
+                        //Search
+                        doSearch(searchTerm);
+                    } else {
+                        //Short search term
+                        searchPlateEditText.setError(getString(R.string.search_term_min_length));
+                    }
                 } else {
-                    //TODO GFPF - Show error message on textview
                     //No search term
-                    //doLoadAll();
+                    searchPlateEditText.setError(getString(R.string.search_term_empty));
                 }
             }
             return true;
@@ -158,7 +173,7 @@ public class MainFragment extends Fragment implements
 
         //TODO GFPF - REMOVE SLEEP
         Disposable subscribe = Observable.fromCallable(() -> {
-                    Thread.sleep(2000); // Simulate delay
+                    Thread.sleep(1000); // Simulate delay
                     return mGHUserViewModel.loadAllGHUsers().blockingGet(); // Blocking call to get the result
                 })
                 .subscribeOn(Schedulers.io()) // Run on background thread

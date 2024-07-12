@@ -6,5 +6,6 @@
     <string name="required_field">Required field</string>
     <string name="user">User</string>
     <string name="details">Details</string>
-
+    <string name="search_term_empty">Search term cannot be empty!</string>
+    <string name="search_term_min_length">Search term must be at least 3</string>
 </resources>

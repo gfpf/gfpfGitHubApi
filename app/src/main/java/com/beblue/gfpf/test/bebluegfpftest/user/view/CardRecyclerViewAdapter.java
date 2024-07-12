@@ -18,6 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static com.google.gson.internal.$Gson$Preconditions.checkNotNull;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
 public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder> {
 
     public interface RecyclerViewClickListener {
@@ -44,7 +47,6 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull CardViewHolder holder, int position) {
-
         if (mUsers != null && position < mUsers.size()) {
             GHUser user = mUsers.get(position);
 
@@ -64,6 +66,13 @@ public class CardRecyclerViewAdapter extends RecyclerView.Adapter<CardViewHolder
                 holder.binding.ghuserHtmlUrl.setText(user.getGHUrl());
             }
         }
+        animateView(holder.itemView);
+    }
+
+    private void animateView(View itemView) {
+        // Apply animation
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.card_fade_in);
+        itemView.startAnimation(animation);
     }
 
     @Override
