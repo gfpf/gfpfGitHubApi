@@ -60,7 +60,7 @@ ext {
     daggerVersion = '2.51.1'
     junitVersion = '4.13.2'
     mockitoVersion = '1.10.19'
-    powerMockito = '2.0.9'
+    powerMockito = '1.6.6'
     hamcrestVersion = '1.3'
     picassoVersion = '2.71828'
     rxJavaVersion = '2.2.21'
