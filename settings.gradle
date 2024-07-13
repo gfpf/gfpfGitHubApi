@@ -29,3 +29,4 @@ def getProjectName() {
 }
 
 include ':app'
+include ':github_api'

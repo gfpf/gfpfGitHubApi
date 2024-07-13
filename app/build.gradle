@@ -91,6 +91,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(":github_api")
 
     // Local tests
     implementation 'androidx.test:monitor:1.7.1'
