@@ -1,4 +1,4 @@
-package com.beblue.gfpf.test.bebluegfpftest.user.data.service;
+package com.beblue.gfpf.test.bebluegfpftest.data.service;
 
 import android.content.Context;
 

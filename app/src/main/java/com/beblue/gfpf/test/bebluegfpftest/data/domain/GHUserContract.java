@@ -1,4 +1,4 @@
-package com.beblue.gfpf.test.bebluegfpftest.user.data.domain;
+package com.beblue.gfpf.test.bebluegfpftest.data.domain;
 
 import java.util.List;
 
@@ -20,10 +20,10 @@ public interface GHUserContract {
 
     interface UserActionsListener {
 
-        Single<GHSearchUser> searchGHUserByName(String searchTerm, boolean forceUpdate);
+        Single<GHSearchUser> searchUserByName(String searchTerm, boolean forceUpdate);
 
-        Single<List<GHUser>> loadAllGHUsers();
+        Single<List<GHUser>> loadAllUsers();
 
-        Single<GHUser> loadGHUserById(int id);
+        Single<GHUser> loadUserById(int id);
     }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:startDestination="@id/main_fragment">
+    app:startDestination="@id/user_showcase_frag">
     <fragment
-        android:id="@+id/main_fragment"
-        android:name="com.beblue.gfpf.test.bebluegfpftest.user.view.MainFragment"
+        android:id="@+id/user_showcase_frag"
+        android:name="com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.UserShowcaseFrag"
         android:label="Main Fragment">
         <action
             android:id="@+id/action_main_frag_to_detailed_frag"
@@ -17,6 +17,6 @@
 
     <fragment
         android:id="@+id/detailed_fragment"
-        android:name="com.beblue.gfpf.test.bebluegfpftest.user.view.DetailedFragment"
+        android:name="com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.UserDetailFrag"
         android:label="Detailed Fragment" />
 </navigation>

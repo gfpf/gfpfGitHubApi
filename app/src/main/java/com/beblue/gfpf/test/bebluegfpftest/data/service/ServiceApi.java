@@ -1,7 +1,7 @@
-package com.beblue.gfpf.test.bebluegfpftest.user.data.service;
+package com.beblue.gfpf.test.bebluegfpftest.data.service;
 
-import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHSearchUser;
-import com.beblue.gfpf.test.bebluegfpftest.user.data.domain.GHUser;
+import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHSearchUser;
+import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHUser;
 
 import java.util.List;
 

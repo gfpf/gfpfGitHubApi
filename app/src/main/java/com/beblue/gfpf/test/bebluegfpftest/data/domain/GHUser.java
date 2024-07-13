@@ -1,4 +1,4 @@
-package com.beblue.gfpf.test.bebluegfpftest.user.data.domain;
+package com.beblue.gfpf.test.bebluegfpftest.data.domain;
 
 import com.google.gson.annotations.SerializedName;
 

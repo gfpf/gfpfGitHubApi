@@ -7,8 +7,12 @@ buildscript {
         classpath('androidx.navigation:navigation-safe-args-gradle-plugin:2.7.7')
         //classpath 'com.android.tools.build:gradle:3.5.3'
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        /**
+         * This dependency is used to apply the Hilt Gradle plugin to your Android project.
+         * The Gradle plugin enhances the build process by generating the necessary Dagger and Hilt-related code at compile time.
+         * You need to apply this plugin in your project-level build.gradle file to enable Hilt support in your Android project.
+         */
+        classpath('com.google.dagger:hilt-android-gradle-plugin:2.50')
     }
 }
 
