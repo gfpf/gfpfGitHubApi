@@ -13,7 +13,7 @@ interface UserContract {
     }
 
     interface UserActionsListener {
-        fun searchUserByName(searchTerm: String, forceUpdate: Boolean): LiveData<GHSearchUser>
+        fun searchUserByName(searchTerm: String, forceUpdate: Boolean): LiveData<GHSearchUser?>
         fun loadAllUsers(): LiveData<List<GHUser>>
         fun loadUserById(id: Int): LiveData<SingleEvent<GHUser>>
     }

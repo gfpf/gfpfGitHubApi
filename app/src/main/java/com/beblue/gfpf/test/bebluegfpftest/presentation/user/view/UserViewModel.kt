@@ -25,8 +25,8 @@ class UserViewModel @Inject constructor(
     val allUsers: LiveData<List<GHUser>>
         get() = _allUsers
 
-    private val _searchResult = MutableLiveData<GHSearchUser>()
-    val searchResult: LiveData<GHSearchUser>
+    private val _searchResult = MutableLiveData<GHSearchUser?>()
+    val searchResult: LiveData<GHSearchUser?>
         get() = _searchResult
 
     private val _userDetail = MutableLiveData<SingleEvent<GHUser>>()
@@ -44,7 +44,7 @@ class UserViewModel @Inject constructor(
     override fun searchUserByName(
         searchTerm: String,
         forceUpdate: Boolean
-    ): LiveData<GHSearchUser> {
+    ): LiveData<GHSearchUser?> {
         viewModelScope.launch(Dispatchers.IO) {
             if (forceUpdate) {
                 mGHUserRepository.refreshData()
@@ -61,5 +61,13 @@ class UserViewModel @Inject constructor(
             _userDetail.postValue(SingleEvent(result))
         }
         return userDetail
+    }
+
+    fun clearAllResult() {
+        _allUsers.postValue(emptyList())
+    }
+
+    fun clearSearchResult() {
+        _searchResult.postValue(null)
     }
 }

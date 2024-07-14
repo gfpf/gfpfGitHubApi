@@ -11,10 +11,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beblue.gfpf.test.bebluegfpftest.R
@@ -33,12 +30,8 @@ import javax.inject.Inject
 class UserShowcaseFrag : Fragment(), GHUserContract.View,
     UserRecyclerViewAdapter.UserRecyclerViewClickListener {
 
-    /*@Inject
-    lateinit var binding: UserShowcaseFragBinding*/
     private lateinit var binding: UserShowcaseFragBinding
-    //private val mGHUserViewModel: UserViewModel by viewModels()
-    private val mGHUserViewModel: UserViewModel by activityViewModels()
-
+    private val mGHUserViewModel: UserViewModel by viewModels()
 
     @Inject
     lateinit var mAdapter: UserRecyclerViewAdapter
@@ -65,17 +58,9 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
         super.onStart()
         Log.d("GFPF", "-onStart -ShowcaseFragment -DataCount: ${mAdapter.itemCount}")
 
-        if (mAdapter.itemCount == 0) {
+        if (mAdapter.itemCount == 0)
             doLoadAll()
-        } else {
-            // TODO GFPF - Make all observers as SingleEvent and handle back nav data
-            //showGHUserListUI(mAdapter.getItems(), false)
-        }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d("GFPF", "-onResume -ShowcaseFragment -DataCount: ${mAdapter.itemCount}")
     }
 
     private fun initSetup() {
@@ -89,27 +74,35 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
         // TODO GFPF - Apply observe extension method and use state like marvel project
         //observe(viewModel.state, ::onViewStateChange)
 
-        //All Users
+        /**
+         * All Users
+         * IsNot SingleEvent to avoid make new request when frag is recreated (nav-back, config change)
+         * @see <SingleEvent> class.
+         */
         mGHUserViewModel.allUsers.observe(viewLifecycleOwner) { result ->
-            if (result != null) {
-                showGHUserListUI(result, false)
-            } else {
-                showGHUserListUI(emptyList(), true)
+            if (!isSearchMode) {
+                showGHUserListUI(result ?: emptyList(), false)
+                setProgressIndicator(false)
             }
-            setProgressIndicator(false)
         }
 
-        // TODO GFPF - Make all observers as SingleEvent and handle back nav data
-        //Search
+        /**
+         * Search Users
+         * IsNot SingleEvent to avoid make new request when frag is recreated (nav-back, config change)
+         * @see <SingleEvent> class.
+         */
         mGHUserViewModel.searchResult.observe(viewLifecycleOwner) { ghSearchUser ->
-            if (ghSearchUser != null && ghSearchUser.users.isNotEmpty()) {
-                showGHUserListUI(ghSearchUser.users, false)
-            } else {
-                showGHUserListUI(emptyList(), false)
+            if (isSearchMode) {
+                showGHUserListUI(ghSearchUser?.users ?: emptyList(), false)
+                setProgressIndicator(false)
             }
-            setProgressIndicator(false)
         }
-        // User
+
+        /**
+         * User Detail
+         * Using SingleEvent strategy to avoid observe data twice
+         * @see <SingleEvent> class.
+         */
         mGHUserViewModel.userDetail.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { user ->
                 showGHUserDetailUI(user)
@@ -125,6 +118,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
 
     private fun setupSwipeRefresh() {
         binding.swipeRefresh.setOnRefreshListener {
+            isSearchMode = false
             doLoadAll()
             clearSearchView()
             animateSearchView()
@@ -144,14 +138,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
         if (!::mAdapter.isInitialized) {
             mAdapter = UserRecyclerViewAdapter(requireContext(), this)
         }
-        //mAdapter = UserRecyclerViewAdapter(requireContext(), this)
         binding.recyclerView.adapter = mAdapter
-
-        /*if (mAdapter.itemCount == 0) {
-            doLoadAll()
-        } else {
-            showGHUserListUI(mAdapter.getItems(), false)
-        }*/
     }
 
     fun scrollToTop() {
@@ -175,6 +162,8 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
             null
         )
         val searchPlateEditText: EditText = binding.searchView.findViewById(searchViewPlateId)
+        searchPlateEditText.imeOptions = EditorInfo.IME_ACTION_SEARCH
+
         searchPlateEditText.setOnEditorActionListener { view, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val searchTerm = view.text.toString()
@@ -212,6 +201,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
     private fun doSearch(searchTerm: String) {
         Util.hideKeyboard(requireActivity())
         setProgressIndicator(true)
+        isSearchMode = true
         mGHUserViewModel.searchUserByName(searchTerm, false)
     }
 
@@ -258,15 +248,8 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
         // Implementation for showing a toast message
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        // Remove all observers to prevent updates after the fragment is destroyed
-        /*mGHUserViewModel.allUsers.removeObservers(viewLifecycleOwner)
-        mGHUserViewModel.searchResult.removeObservers(viewLifecycleOwner)
-        mGHUserViewModel.userDetail.removeObservers(viewLifecycleOwner)*/
-    }
-
     companion object {
         private const val minSearchTermLength = 3
+        private var isSearchMode = false
     }
 }

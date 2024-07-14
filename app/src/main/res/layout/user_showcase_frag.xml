@@ -29,7 +29,10 @@
                     android:layout_marginStart="@dimen/length_8_dp"
                     android:layout_marginTop="@dimen/length_8_dp"
                     android:layout_marginEnd="@dimen/length_8_dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:imeOptions="actionSearch"
+                    android:inputType="text"
                     android:queryHint="@string/search_hint"
                     android:searchIcon="@android:drawable/ic_menu_myplaces"
                     android:voiceIcon="@android:drawable/ic_btn_speak_now" />
