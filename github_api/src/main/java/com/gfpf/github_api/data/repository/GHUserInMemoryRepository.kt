@@ -15,7 +15,11 @@ class GHUserInMemoryRepository(private val mServiceApi: GHServiceApi) : IGHUserR
     }
 
     override suspend fun loadAllUsers(): List<GHUser> {
-        return mServiceApi.loadAllGHUsers()
+        if (mCachedResults == null) {
+            mCachedResults = mServiceApi.loadAllGHUsers()
+        }
+        return mCachedResults!!
+        //return mServiceApi.loadAllGHUsers()
     }
 
     override suspend fun searchUserByName(name: String): GHSearchUser {

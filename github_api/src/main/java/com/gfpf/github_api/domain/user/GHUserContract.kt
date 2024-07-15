@@ -18,7 +18,9 @@ interface GHUserContract {
         fun loadUserById(id: Int): LiveData<SingleEvent<GHUser?>>
     }
 
-    //TODO GFPF - Should I make these methods suspend?
+    //TODO GFPF - Should I make these methods suspend to avoid spare code?
+    // The line below does not need/uses the method return LiveData<GHSearchUser?>
+    // mGHUserViewModel.searchUserByName(searchTerm, false)
     /*interface UserActionsListener {
         suspend fun searchUserByName(searchTerm: String, forceUpdate: Boolean): GHSearchUser?
         suspend fun loadAllUsers(): List<GHUser>

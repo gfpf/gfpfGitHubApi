@@ -4,7 +4,6 @@ import android.content.Context
 import com.gfpf.github_api.BuildConfig
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -30,9 +29,8 @@ object RetrofitGHServiceApiClient {
         }
 
         if (!::retrofit.isInitialized) {
-            // Create Moshi instance with KotlinJsonAdapterFactory
+            // Create Moshi instance without KotlinJsonAdapterFactory
             val moshi = Moshi.Builder()
-                .add(KotlinJsonAdapterFactory())
                 .build()
 
             retrofit = Retrofit.Builder()
@@ -50,7 +48,6 @@ object RetrofitGHServiceApiClient {
             .readTimeout(REQUEST_TIMEOUT.toLong(), TimeUnit.SECONDS)
             .writeTimeout(REQUEST_TIMEOUT.toLong(), TimeUnit.SECONDS)
 
-        //TODO GFPF - Make OkHttp Profiler log view works (alt+8)
         if (BuildConfig.DEBUG)
             httpClient.addInterceptor(OkHttpProfilerInterceptor())
 
