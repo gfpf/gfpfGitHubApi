@@ -17,6 +17,8 @@ android {
     }
 
     buildTypes {
+        debug {
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -42,6 +44,15 @@ android {
         }
     }
 
+    androidComponents {
+        // Remove mockRelease as it's not needed.
+        beforeVariants { variantBuilder ->
+            if (variantBuilder.buildType == "release" && variantBuilder.productFlavors.any { it.second == "mock" }) {
+                variantBuilder.enable = false
+            }
+        }
+    }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -50,15 +61,6 @@ android {
     /*hilt {
         enableExperimentalClasspathAggregation = true
     }*/
-}
-
-androidComponents {
-    // Remove mockRelease as it's not needed.
-    beforeVariants { variantBuilder ->
-        if (variantBuilder.buildType == "release" && variantBuilder.productFlavors.any { it.second == "mock" }) {
-            variantBuilder.enable = false
-        }
-    }
 }
 
 dependencies {

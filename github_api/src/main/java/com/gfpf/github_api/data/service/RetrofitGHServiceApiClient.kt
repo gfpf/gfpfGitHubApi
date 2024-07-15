@@ -1,7 +1,7 @@
 package com.gfpf.github_api.data.service
 
 import android.content.Context
-import com.itkacher.okprofiler.BuildConfig
+import com.gfpf.github_api.BuildConfig
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
