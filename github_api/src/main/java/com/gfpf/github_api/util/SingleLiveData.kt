@@ -1,4 +1,4 @@
-package com.beblue.gfpf.test.bebluegfpftest.util
+package com.gfpf.github_api.util
 
 import android.util.Log
 import androidx.annotation.MainThread

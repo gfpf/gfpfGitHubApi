@@ -1,9 +1,10 @@
 package com.gfpf.github_api.domain.user
 
 import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializable as KotlinSerializable
+import java.io.Serializable as JavaSerializable
 
-@Serializable
+@KotlinSerializable
 data class GHUser(
     @SerialName("id")
     var id: Int? = null,
@@ -19,7 +20,7 @@ data class GHUser(
 
     @SerialName("html_url")
     var ghUrl: String? = null
-) {
+) : JavaSerializable {
     companion object {
         const val REQUESTED_USER_KEY = "REQUESTED_USER_KEY"
     }

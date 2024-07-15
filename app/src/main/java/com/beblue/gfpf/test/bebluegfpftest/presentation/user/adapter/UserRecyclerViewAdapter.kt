@@ -9,7 +9,7 @@ import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.beblue.gfpf.test.bebluegfpftest.R
 import com.beblue.gfpf.test.bebluegfpftest.databinding.UserCardItemBinding
-import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHUser
+import com.gfpf.github_api.domain.user.GHUser
 import com.squareup.picasso.Picasso
 import javax.inject.Inject
 

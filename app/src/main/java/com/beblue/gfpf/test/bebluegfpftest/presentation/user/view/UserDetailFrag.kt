@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.beblue.gfpf.test.bebluegfpftest.R
 import com.beblue.gfpf.test.bebluegfpftest.databinding.UserDetailFragBinding
-import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHUser
-import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHUserContract
+import com.gfpf.github_api.domain.user.GHUser
+import com.gfpf.github_api.domain.user.GHUserContract
 import com.squareup.picasso.Picasso
 import me.relex.photodraweeview.PhotoDraweeView
 

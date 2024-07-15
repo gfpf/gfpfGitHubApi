@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHSearchUser
-import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHUser
-import com.beblue.gfpf.test.bebluegfpftest.data.domain.UserContract
-import com.beblue.gfpf.test.bebluegfpftest.data.repository.UserRepository
-import com.beblue.gfpf.test.bebluegfpftest.util.SingleEvent
+import com.gfpf.github_api.domain.user.GHUserContract
+import com.gfpf.github_api.data.repository.IGHUserRepository
+import com.gfpf.github_api.domain.user.GHSearchUser
+import com.gfpf.github_api.domain.user.GHUser
+import com.gfpf.github_api.util.SingleEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,10 +16,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(
-    private val userRepository: UserRepository
-) : ViewModel(), UserContract.UserActionsListener {
+    private val userRepository: IGHUserRepository
+) : ViewModel(), GHUserContract.UserActionsListener {
 
-    private val mGHUserRepository: UserRepository = userRepository
+    private val mGHUserRepository: IGHUserRepository = userRepository
 
     private val _allUsers = MutableLiveData<List<GHUser>>()
     val allUsers: LiveData<List<GHUser>>

@@ -3,7 +3,6 @@ package com.beblue.gfpf.test.bebluegfpftest.presentation
 import android.app.Application
 import com.beblue.gfpf.test.bebluegfpftest.di.AppComponent
 import com.beblue.gfpf.test.bebluegfpftest.di.DaggerAppComponent
-import com.gfpf.github_api.data.repository.GithubRepository
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

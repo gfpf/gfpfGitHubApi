@@ -1,30 +1,21 @@
-package com.gfpf.github_api.data.api
+package com.gfpf.github_api.data.service
 
 import com.gfpf.github_api.domain.user.GHSearchUser
 import com.gfpf.github_api.domain.user.GHUser
-import retrofit2.http.DELETE
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
-interface GithubService {
-    /*@GET("users/{username}")
-    suspend fun getUser(@Path("username") username: String): GHUser*/
+interface GHServiceApi {
 
     // Create GHUser
     @FormUrlEncoded
     @POST("users/new")
-    suspend fun createGHUser(@Field("GHUser") users: List<GHUser>): Unit
+    suspend fun createGHUser(@Field("GHUser") vararg users: GHUser)
 
     // Fetch all Users
     @GET("users")
     suspend fun loadAllGHUsers(): List<GHUser>
 
-    // Search for a user by username
+    // Fetch a user by username
     @GET("search/users")
     suspend fun searchGHUserByName(
         @Query("q") username: String,
@@ -32,19 +23,19 @@ interface GithubService {
         @Query("order") order: String
     ): GHSearchUser
 
-    // Fetch a user by id
+    // Fetch a user by ID
     @GET("user/{id}")
     suspend fun loadGHUserById(@Path("id") id: Int): GHUser
 
-    // Update a single GHUser
+    // Update single GHUser
     @FormUrlEncoded
     @PUT("user/{id}")
     suspend fun updateGHUser(
         @Path("id") id: Int,
-        @Field("GHUser") GHUser: String
-    ): Unit
+        @Field("GHUser") ghUser: String
+    )
 
     // Delete GHUser
     @DELETE("user/{id}")
-    suspend fun deleteGHUser(@Path("id") id: Int): Unit
+    suspend fun deleteGHUser(@Path("id") id: Int)
 }

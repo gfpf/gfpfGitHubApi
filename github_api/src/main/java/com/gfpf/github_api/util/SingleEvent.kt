@@ -1,4 +1,4 @@
-package com.beblue.gfpf.test.bebluegfpftest.util
+package com.gfpf.github_api.util
 
 /**
  * Wrapper for data that is exposed via a LiveData that represents an event.

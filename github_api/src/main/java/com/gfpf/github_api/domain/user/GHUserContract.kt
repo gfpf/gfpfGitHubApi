@@ -1,14 +1,14 @@
-package com.beblue.gfpf.test.bebluegfpftest.data.domain
+package com.gfpf.github_api.domain.user
 
 import androidx.lifecycle.LiveData
-import com.beblue.gfpf.test.bebluegfpftest.util.SingleEvent
+import com.gfpf.github_api.util.SingleEvent
 
-interface UserContract {
+interface GHUserContract {
 
     interface View {
-        fun setProgressIndicator(active: Boolean)
+        fun setProgressIndicator(isActive: Boolean)
         fun showToastMessage(message: String)
-        fun showGHUserListUI(users: List<GHUser>, isAppend: Boolean)
+        fun showGHUserListUI(users: List<GHUser>?, isAppend: Boolean)
         fun showGHUserDetailUI(requestedUser: GHUser)
     }
 

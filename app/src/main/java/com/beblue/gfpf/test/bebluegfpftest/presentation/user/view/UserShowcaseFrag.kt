@@ -15,13 +15,13 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beblue.gfpf.test.bebluegfpftest.R
-import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHUser
-import com.beblue.gfpf.test.bebluegfpftest.data.domain.GHUserContract
 import com.beblue.gfpf.test.bebluegfpftest.databinding.UserShowcaseFragBinding
 import com.beblue.gfpf.test.bebluegfpftest.presentation.user.adapter.UserCardItemDecoration
 import com.beblue.gfpf.test.bebluegfpftest.presentation.user.adapter.UserRecyclerViewAdapter
 import com.beblue.gfpf.test.bebluegfpftest.util.ProgressBarManager
 import com.beblue.gfpf.test.bebluegfpftest.util.Util
+import com.gfpf.github_api.domain.user.GHUser
+import com.gfpf.github_api.domain.user.GHUserContract
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -226,7 +226,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
 
     private fun doLoadUserById(selectedUser: GHUser) {
         setProgressIndicator(true)
-        mGHUserViewModel.loadUserById(selectedUser.id)
+        selectedUser.id?.let { mGHUserViewModel.loadUserById(it) }
     }
 
     override fun showGHUserDetailUI(requestedUser: GHUser) {
