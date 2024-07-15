@@ -1,6 +1,8 @@
 package com.gfpf.github_api.data.service
 
 import android.content.Context
+import com.itkacher.okprofiler.BuildConfig
+import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
@@ -47,6 +49,10 @@ object RetrofitGHServiceApiClient {
             .connectTimeout(REQUEST_TIMEOUT.toLong(), TimeUnit.SECONDS)
             .readTimeout(REQUEST_TIMEOUT.toLong(), TimeUnit.SECONDS)
             .writeTimeout(REQUEST_TIMEOUT.toLong(), TimeUnit.SECONDS)
+
+        //TODO GFPF - Make OkHttp Profiler log view works (alt+8)
+        if (BuildConfig.DEBUG)
+            httpClient.addInterceptor(OkHttpProfilerInterceptor())
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)

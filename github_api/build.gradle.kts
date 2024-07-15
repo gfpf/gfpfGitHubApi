@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     kotlin("plugin.serialization") version "1.6.10"
-
 }
 
 android {
@@ -26,10 +25,23 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+
+    flavorDimensions.add("default")
+    productFlavors {
+        create("mock") {
+            dimension = "default"
+            //applicationIdSuffix = ".mock.debug"
+            //versionNameSuffix = "-mock-debug"
+        }
+
+        create("prod") {
+            dimension = "default"
+            /*applicationIdSuffix = ".prod.debug"
+            versionNameSuffix = "-prod-debug"
+            versionName = "${defaultConfig.versionName}.test"*/
+        }
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
@@ -38,6 +50,15 @@ android {
     /*hilt {
         enableExperimentalClasspathAggregation = true
     }*/
+}
+
+androidComponents {
+    // Remove mockRelease as it's not needed.
+    beforeVariants { variantBuilder ->
+        if (variantBuilder.buildType == "release" && variantBuilder.productFlavors.any { it.second == "mock" }) {
+            variantBuilder.enable = false
+        }
+    }
 }
 
 dependencies {
@@ -54,10 +75,15 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.12.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.14")
+    implementation("com.localebro:okhttpprofiler:1.0.8")
 
     // Dagger
-    implementation("com.google.dagger:dagger:2.51.1")
-    kapt("com.google.dagger:dagger-compiler:2.51.1")
+    /*implementation("com.google.dagger:dagger:2.51.1")
+    kapt("com.google.dagger:dagger-compiler:2.51.1")*/
+
+    // Hilt dependencies
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
 
     // Test
     testImplementation("junit:junit:4.13.2")

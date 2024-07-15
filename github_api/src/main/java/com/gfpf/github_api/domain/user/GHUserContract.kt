@@ -15,6 +15,13 @@ interface GHUserContract {
     interface UserActionsListener {
         fun searchUserByName(searchTerm: String, forceUpdate: Boolean): LiveData<GHSearchUser?>
         fun loadAllUsers(): LiveData<List<GHUser>>
-        fun loadUserById(id: Int): LiveData<SingleEvent<GHUser>>
+        fun loadUserById(id: Int): LiveData<SingleEvent<GHUser?>>
     }
+
+    //TODO GFPF - Should I make these methods suspend?
+    /*interface UserActionsListener {
+        suspend fun searchUserByName(searchTerm: String, forceUpdate: Boolean): GHSearchUser?
+        suspend fun loadAllUsers(): List<GHUser>
+        suspend fun loadUserById(id: Int): SingleEvent<GHUser>
+    }*/
 }

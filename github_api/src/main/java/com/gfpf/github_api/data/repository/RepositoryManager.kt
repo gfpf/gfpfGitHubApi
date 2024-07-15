@@ -1,6 +1,6 @@
-package com.beblue.gfpf.test.bebluegfpftest.data.repository
+package com.gfpf.github_api.data.repository
 
-import com.gfpf.github_api.data.repository.IGHUserRepository
+import com.gfpf.github_api.data.repository.contract.IGHUserRepository
 import com.gfpf.github_api.data.service.GHServiceApi
 
 object RepositoryManager {

@@ -1,4 +1,4 @@
-package com.beblue.gfpf.test.bebluegfpftest
+package com.gfpf.github_api
 
 import android.content.Context
 import com.gfpf.github_api.data.repository.RepositoryManager

@@ -1,4 +1,4 @@
-package com.beblue.gfpf.test.bebluegfpftest.data;
+package com.gfpf.github_api.data;
 
 import com.gfpf.github_api.domain.user.GHUser;
 

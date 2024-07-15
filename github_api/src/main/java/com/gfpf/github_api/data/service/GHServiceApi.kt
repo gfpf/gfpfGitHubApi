@@ -25,7 +25,7 @@ interface GHServiceApi {
 
     // Fetch a user by ID
     @GET("user/{id}")
-    suspend fun loadGHUserById(@Path("id") id: Int): GHUser
+    suspend fun loadGHUserById(@Path("id") id: Int): GHUser?
 
     // Update single GHUser
     @FormUrlEncoded

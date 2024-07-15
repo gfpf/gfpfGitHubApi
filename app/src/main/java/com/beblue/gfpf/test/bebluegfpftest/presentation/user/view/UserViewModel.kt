@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gfpf.github_api.domain.user.GHUserContract
-import com.gfpf.github_api.data.repository.IGHUserRepository
+import com.gfpf.github_api.data.repository.contract.IGHUserRepository
 import com.gfpf.github_api.domain.user.GHSearchUser
 import com.gfpf.github_api.domain.user.GHUser
 import com.gfpf.github_api.util.SingleEvent
@@ -29,8 +29,8 @@ class UserViewModel @Inject constructor(
     val searchResult: LiveData<GHSearchUser?>
         get() = _searchResult
 
-    private val _userDetail = MutableLiveData<SingleEvent<GHUser>>()
-    val userDetail: LiveData<SingleEvent<GHUser>>
+    private val _userDetail = MutableLiveData<SingleEvent<GHUser?>>()
+    val userDetail: LiveData<SingleEvent<GHUser?>>
         get() = _userDetail
 
     override fun loadAllUsers(): LiveData<List<GHUser>> {
@@ -55,7 +55,7 @@ class UserViewModel @Inject constructor(
         return searchResult
     }
 
-    override fun loadUserById(id: Int): LiveData<SingleEvent<GHUser>> {
+    override fun loadUserById(id: Int): LiveData<SingleEvent<GHUser?>> {
         viewModelScope.launch(Dispatchers.IO) {
             val result = mGHUserRepository.loadUserById(id)
             _userDetail.postValue(SingleEvent(result))
