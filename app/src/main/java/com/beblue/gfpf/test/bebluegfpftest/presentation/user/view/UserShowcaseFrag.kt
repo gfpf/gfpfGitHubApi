@@ -95,6 +95,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
             if (isSearchMode) {
                 showGHUserListUI(ghSearchUser?.users ?: emptyList(), false)
                 setProgressIndicator(false)
+                showToastMessage(getString(R.string.clear_results))
             }
         }
 
@@ -144,11 +145,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
     fun scrollToTop() {
         layoutManager.let {
             if (it.findFirstVisibleItemPosition() == 0) {
-                Snackbar.make(
-                    requireView(),
-                    getString(R.string.scroll_up_error),
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                showToastMessage(getString(R.string.scroll_up_error))
             } else {
                 binding.recyclerView.smoothScrollToPosition(0)
             }
@@ -246,6 +243,11 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
 
     override fun showToastMessage(message: String) {
         // Implementation for showing a toast message
+        Snackbar.make(
+            requireView(),
+            message,
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     companion object {
