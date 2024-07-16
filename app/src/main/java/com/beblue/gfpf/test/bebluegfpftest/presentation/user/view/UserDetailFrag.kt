@@ -9,17 +9,17 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.view.Window
 import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.animation.Transformation
 import android.widget.ArrayAdapter
 import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beblue.gfpf.test.bebluegfpftest.R
 import com.beblue.gfpf.test.bebluegfpftest.databinding.UserDetailFragBinding
@@ -30,6 +30,7 @@ import com.beblue.gfpf.test.bebluegfpftest.util.updateActionBarTitle
 import com.gfpf.github_api.domain.user.GHRepository
 import com.gfpf.github_api.domain.user.GHUser
 import com.gfpf.github_api.domain.user.GHTag
+import com.google.android.material.chip.Chip
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
@@ -46,7 +47,7 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     //private lateinit var mReposAdapter: ArrayAdapter<String>
     private lateinit var mReposAdapter: ArrayAdapter<GHRepository>
 
-    //private lateinit var mLayoutManager: LinearLayoutManager
+    private lateinit var mLayoutManager: LinearLayoutManager
 
     //TODO GFPF - Fix this Inject - UserDetailModule
     //@Inject
@@ -94,8 +95,8 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
             // Set layoutManager once
             if (layoutManager == null) {
                 //It can be added from file resources - app:layoutManager="LinearLayoutManager"
-                //mLayoutManager = LinearLayoutManager(context)
-                //layoutManager = mLayoutManager
+                mLayoutManager = LinearLayoutManager(context)
+                layoutManager = mLayoutManager // app:layoutManager="LinearLayoutManager"
 
                 val smallPadding =
                     resources.getDimensionPixelSize(R.dimen.nav_header_vertical_spacing)
@@ -116,13 +117,12 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
 
                 override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                     val currentRepo = mReposAdapter.getItem(position)
-
                     (holder.itemView as? TextView)?.text = currentRepo?.name
-
                     setItemSelector(holder.itemView)
-
                     // Set click listener for each item
                     holder.itemView.setOnClickListener {
+                        //keep the selected item highlighted code
+                        holder.itemView.isSelected = true
                         //val selectedRepo = mReposAdapter.getItem(position)
                         //Toast.makeText(context, "Clicked on: ${selectedRepo?.name}", Toast.LENGTH_SHORT).show()
                         doLoadRepoTags(mUser?.login.toString(), currentRepo?.name.toString())
@@ -190,6 +190,36 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     override fun showUserTagListUI(ghTags: List<GHTag>?) {
         //Toast.makeText(context, "Tags: ${ghTags?.size}", Toast.LENGTH_SHORT).show()
         showToastMessage("Tags: ${ghTags?.size}")
+
+        // Assuming 'tags' is a list of strings representing tags
+        val chipGroupTags = mBinding.chipGroupTags
+        // Clear previous data in ChipGroup
+        //chipGroup.removeAllViews()
+
+        ghTags?.forEach { tag ->
+            val chip = Chip(requireContext())
+            chip.text = tag.name
+            chip.isClickable = true
+            chip.isCheckable = false // Adjust based on your needs
+            chipGroupTags.addView(chip)
+        }
+
+        // Scroll to the bottom if the list is not empty
+        if (chipGroupTags.childCount > 0) {
+            scrollToView(chipGroupTags)
+            animateView(chipGroupTags)
+        }
+    }
+
+    private fun animateView(view: View) {
+        val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce_in_right)
+        view.startAnimation(animation)
+    }
+
+    private fun scrollToView(view: View) {
+        view.post {
+            mBinding.scrollView.smoothScrollTo(0, view.top)
+        }
     }
 
     private fun showRequestedItem() {
@@ -246,38 +276,16 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
 
     private fun doLoadUserRepos(username: String) {
         setReposProgressIndicator(true)
+        // Clear previous data in ChipGroup
+        mBinding.chipGroupTags.removeAllViews()
         mActionListener.loadUserRepos(username)
     }
 
     private fun doLoadRepoTags(owner: String, repo: String) {
         setTagsProgressIndicator(true)
+        // Clear previous data in ChipGroup
+        mBinding.chipGroupTags.removeAllViews()
         mActionListener.loadRepoTags(owner, repo)
-    }
-
-    fun scroll() {
-        mBinding.scrollView.viewTreeObserver?.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val scrollViewHeight = mBinding.scrollView.height
-                if (scrollViewHeight > 0) {
-                    mBinding.scrollView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-
-                    val lastView = mBinding.scrollView.getChildAt(
-                        mBinding.scrollView.childCount.minus(1)
-                    )
-                    val lastViewBottom =
-                        (lastView?.bottom ?: 0) + mBinding.scrollView.paddingBottom
-                    val deltaScrollY =
-                        (lastViewBottom - scrollViewHeight) - mBinding.scrollView.scrollY
-
-                    /* If you want to see the scroll animation, call this. */
-                    //binding?.scrollView?.smoothScrollBy(0, deltaScrollY)
-                    mBinding.scrollView.smoothScrollTo(0, deltaScrollY)
-                    /* If you don't want, call this. */
-                    //binding?.scrollView?.scrollBy(0, deltaScrollY)
-                }
-            }
-        })
     }
 
     companion object {
