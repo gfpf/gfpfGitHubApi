@@ -113,7 +113,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:scrollbarStyle="insideInset"
-                            android:visibility="gone" />
+                            android:visibility="gone"
+                            app:layoutManager="LinearLayoutManager" />
 
                         <TextView
                             android:id="@+id/no_repos_results_label"

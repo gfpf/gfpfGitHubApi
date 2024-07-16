@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,7 +47,7 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     private lateinit var mActionListener: IUserDetailFrag.ActionListener
     private var mUser: GHUser? = null
     private lateinit var mReposAdapter: ArrayAdapter<String>
-    lateinit var mLayoutManager: LinearLayoutManager
+    //private lateinit var mLayoutManager: LinearLayoutManager
 
     //TODO GFPF - Fix this Inject - UserDetailModule
     //@Inject
@@ -92,8 +94,9 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
         mBinding.recyclerViewUserRepos.apply {
             // Set layoutManager once
             if (layoutManager == null) {
-                mLayoutManager = LinearLayoutManager(context)
-                layoutManager = mLayoutManager
+                //It can be added from file resources - app:layoutManager="LinearLayoutManager"
+                //mLayoutManager = LinearLayoutManager(context)
+                //layoutManager = mLayoutManager
 
                 val smallPadding =
                     resources.getDimensionPixelSize(R.dimen.nav_header_vertical_spacing)
@@ -114,10 +117,27 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
 
                 override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
                     (holder.itemView as? TextView)?.text = mReposAdapter.getItem(position)
+
+                    setItemSelector(holder.itemView)
+
+                    // Set click listener for each item
+                    holder.itemView.setOnClickListener {
+                        val selectedRepo = mReposAdapter.getItem(position)
+                        // Handle item click action here, e.g., navigate to detail fragment
+                        Toast.makeText(context, "Clicked on: $selectedRepo", Toast.LENGTH_SHORT).show()
+                    }
                 }
 
                 override fun getItemCount(): Int {
                     return mReposAdapter.count
+                }
+
+                private fun setItemSelector(itemView: View) {
+                    val outValue = TypedValue()
+                    context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+                    val drawableResId = outValue.resourceId
+                    // Set the background drawable
+                    itemView.setBackgroundResource(drawableResId)
                 }
             }
         }
