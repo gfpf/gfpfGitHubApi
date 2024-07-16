@@ -109,7 +109,7 @@ class UserDetailFrag : Fragment(), View.OnClickListener {
     private fun showImage(photoUri: String?) {
         val builder = Dialog(requireContext(), android.R.style.Theme_Light)
         builder.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        builder.window?.setBackgroundDrawable(ColorDrawable(Color.RED))
+        //builder.window?.setBackgroundDrawable(ColorDrawable(Color.RED))
 
         builder.setOnDismissListener {}
 
