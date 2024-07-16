@@ -1,9 +1,12 @@
 package com.beblue.gfpf.test.bebluegfpftest.util
 
+import android.app.ProgressDialog
+import android.content.Context
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 class ProgressBarManager private constructor() {
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private var progressDialog: ProgressDialog? = null
     private var progressCircleDiameter = 0
     private var selectedOffset: Offset = Offset.Top
 
@@ -27,6 +30,15 @@ class ProgressBarManager private constructor() {
         }
     }
 
+    fun setProgressDialog(context: Context) {
+        synchronized(this) {
+            progressDialog = ProgressDialog(context).apply {
+                setMessage("Loading...")
+                setCancelable(false)
+            }
+        }
+    }
+
     fun updateProgressPosition(offset: Offset) {
         selectedOffset = offset
         val circleOffset = calculateOffset(offset)
@@ -46,12 +58,14 @@ class ProgressBarManager private constructor() {
     fun showProgress() {
         synchronized(this) {
             swipeRefreshLayout?.isRefreshing = true
+            progressDialog?.show()
         }
     }
 
     fun hideProgress() {
         synchronized(this) {
             swipeRefreshLayout?.isRefreshing = false
+            progressDialog?.dismiss()
         }
     }
 
@@ -71,6 +85,16 @@ class ProgressBarManager private constructor() {
                     instance = ProgressBarManager()
                 }
                 instance?.setSwipeRefreshLayout(swipeRefreshLayout)
+            }
+        }
+
+        @JvmStatic
+        fun init(context: Context) {
+            synchronized(this) {
+                if (instance == null) {
+                    instance = ProgressBarManager()
+                }
+                instance?.setProgressDialog(context)
             }
         }
 

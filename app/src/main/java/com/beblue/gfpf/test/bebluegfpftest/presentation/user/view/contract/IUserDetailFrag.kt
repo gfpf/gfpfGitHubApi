@@ -7,7 +7,8 @@ import com.gfpf.github_api.domain.user.GHTag
 interface IUserDetailFrag {
 
     interface View {
-        fun setProgressIndicator(isActive: Boolean)
+        fun setReposProgressIndicator(isActive: Boolean)
+        fun setTagsProgressIndicator(isActive: Boolean)
         fun showToastMessage(message: String)
         fun showUserRepoListUI(ghRepos: List<GHRepository>?, isAppend: Boolean)
         fun showUserTagListUI(ghTags: List<GHTag>?)

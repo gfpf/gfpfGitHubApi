@@ -16,12 +16,4 @@ class UserCardViewHolder(
     override fun onClick(view: View) {
         mUserRecyclerViewClickListener.recyclerViewClicked(view, layoutPosition)
     }
-
-    //TODO GFPF - How to clear anim on detach?
-    /*override fun onViewDetachedFromWindow() {
-        super.onViewDetachedFromWindow()
-        // Perform cleanup tasks when item view is detached from window
-        // Example: Clear animations
-        itemView.clearAnimation()
-    }*/
 }

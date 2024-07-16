@@ -20,16 +20,28 @@ import java.io.Serializable
 @JsonClass(generateAdapter = true)
 data class GHTag(
     @Json(name = "node_id")
-    var nodeId: Int? = null,
+    var nodeId: String? = null,
 
-    @Json(name = "tag")
-    var tag: String? = null,
+    @Json(name = "name")
+    var name: String? = null,
 
+    @Json(name = "zipball_url")
+    var zipballUrl: String? = null,
+
+    @Json(name = "tarball_url")
+    var tarballUrl: String? = null,
+
+    @Json(name = "commit")
+    var commit: GHCommit? = null
+
+) : Serializable {
+    companion object {}
+}
+
+@JsonClass(generateAdapter = true)
+data class GHCommit(
     @Json(name = "sha")
-    var sha: String? = null,
-
-    @Json(name = "message")
-    var message: String? = null,
+    var nodeId: String? = null,
 
     @Json(name = "url")
     var url: String? = null

@@ -18,26 +18,22 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beblue.gfpf.test.bebluegfpftest.R
 import com.beblue.gfpf.test.bebluegfpftest.databinding.UserDetailFragBinding
 import com.beblue.gfpf.test.bebluegfpftest.presentation.user.adapter.UserCardItemDecoration
 import com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.contract.IUserDetailFrag
+import com.beblue.gfpf.test.bebluegfpftest.util.ProgressBarManager
 import com.beblue.gfpf.test.bebluegfpftest.util.updateActionBarTitle
 import com.gfpf.github_api.domain.user.GHRepository
 import com.gfpf.github_api.domain.user.GHUser
-import com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.contract.IUserShowcaseFrag
-import com.beblue.gfpf.test.bebluegfpftest.util.ProgressBarManager
 import com.gfpf.github_api.domain.user.GHTag
 import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import me.relex.photodraweeview.PhotoDraweeView
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
@@ -46,13 +42,15 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     private val mGHUserViewModel: UserViewModel by viewModels()
     private lateinit var mActionListener: IUserDetailFrag.ActionListener
     private var mUser: GHUser? = null
-    private lateinit var mReposAdapter: ArrayAdapter<String>
+
+    //private lateinit var mReposAdapter: ArrayAdapter<String>
+    private lateinit var mReposAdapter: ArrayAdapter<GHRepository>
+
     //private lateinit var mLayoutManager: LinearLayoutManager
 
     //TODO GFPF - Fix this Inject - UserDetailModule
     //@Inject
     //lateinit var mActionListener: IUserDetailFrag.ActionListener
-
 
 
     override fun onCreateView(
@@ -78,6 +76,7 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     }
 
     private fun initSetup() {
+        ProgressBarManager.init(requireContext())
         mActionListener = mGHUserViewModel
         (activity as? AppCompatActivity)?.updateActionBarTitle(getString(R.string.details))
         mBinding.btnExpandSpecs.setOnClickListener(this)
@@ -116,15 +115,17 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
                 }
 
                 override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-                    (holder.itemView as? TextView)?.text = mReposAdapter.getItem(position)
+                    val currentRepo = mReposAdapter.getItem(position)
+
+                    (holder.itemView as? TextView)?.text = currentRepo?.name
 
                     setItemSelector(holder.itemView)
 
                     // Set click listener for each item
                     holder.itemView.setOnClickListener {
-                        val selectedRepo = mReposAdapter.getItem(position)
-                        // Handle item click action here, e.g., navigate to detail fragment
-                        Toast.makeText(context, "Clicked on: $selectedRepo", Toast.LENGTH_SHORT).show()
+                        //val selectedRepo = mReposAdapter.getItem(position)
+                        //Toast.makeText(context, "Clicked on: ${selectedRepo?.name}", Toast.LENGTH_SHORT).show()
+                        doLoadRepoTags(mUser?.login.toString(), currentRepo?.name.toString())
                     }
                 }
 
@@ -134,7 +135,11 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
 
                 private fun setItemSelector(itemView: View) {
                     val outValue = TypedValue()
-                    context.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+                    context.theme.resolveAttribute(
+                        android.R.attr.selectableItemBackground,
+                        outValue,
+                        true
+                    )
                     val drawableResId = outValue.resourceId
                     // Set the background drawable
                     itemView.setBackgroundResource(drawableResId)
@@ -147,13 +152,13 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     private fun registerObservers() {
         mGHUserViewModel.userRepos.observe(viewLifecycleOwner) { ghRepos ->
             Toast.makeText(context, "Repos: ${ghRepos.size}", Toast.LENGTH_SHORT).show()
-            setProgressIndicator(false)
+            setReposProgressIndicator(false)
             showUserRepoListUI(ghRepos, false)
         }
 
         mGHUserViewModel.repositoryTags.observe(viewLifecycleOwner) { ghTags ->
             Toast.makeText(context, "Tags: ${ghTags.size}", Toast.LENGTH_SHORT).show()
-            setProgressIndicator(false)
+            setTagsProgressIndicator(false)
             showUserTagListUI(ghTags)
         }
     }
@@ -172,14 +177,16 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
                 mReposAdapter.clear()
             }
             // Update the adapter with the new data
-            mReposAdapter.addAll(ghRepos.map { repo -> repo.name })
+            mReposAdapter.addAll(ghRepos)
+            //mReposAdapter.addAll(ghRepos.map { repo -> repo.name })
+
             // Notify RecyclerView's adapter of data change
             mBinding.recyclerViewUserRepos.adapter?.notifyDataSetChanged()
         }
     }
 
     override fun showUserTagListUI(ghTags: List<GHTag>?) {
-        TODO("Not yet implemented")
+        Toast.makeText(context, "Tags: ${ghTags?.size}", Toast.LENGTH_SHORT).show()
     }
 
     private fun showRequestedItem() {
@@ -235,12 +242,13 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     }
 
     private fun doLoadUserRepos(username: String) {
-        setProgressIndicator(true)
+        setReposProgressIndicator(true)
         mActionListener.loadUserRepos(username)
     }
 
     private fun doLoadRepoTags(owner: String, repo: String) {
-        mActionListener.loadRepoTags("gfpf", "gfpfTwitterSearcher")
+        setTagsProgressIndicator(true)
+        mActionListener.loadRepoTags(owner, repo)
     }
 
     fun scroll() {
@@ -324,11 +332,19 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
         }
     }
 
-    override fun setProgressIndicator(isActive: Boolean) {
+    override fun setReposProgressIndicator(isActive: Boolean) {
         if (isActive) {
             mBinding.progressBar.visibility = View.VISIBLE
         } else {
             mBinding.progressBar.visibility = View.GONE
+        }
+    }
+
+    override fun setTagsProgressIndicator(isActive: Boolean) {
+        if (isActive) {
+            ProgressBarManager.getInstance().showProgress()
+        } else {
+            ProgressBarManager.getInstance().hideProgress()
         }
     }
 
