@@ -1,6 +1,8 @@
 package com.gfpf.github_api.data.service
 
+import com.gfpf.github_api.domain.user.GHRepository
 import com.gfpf.github_api.domain.user.GHSearchUser
+import com.gfpf.github_api.domain.user.GHTag
 import com.gfpf.github_api.domain.user.GHUser
 import retrofit2.http.*
 
@@ -26,6 +28,17 @@ interface GHServiceApi {
     // Fetch a user by ID
     @GET("user/{id}")
     suspend fun loadGHUserById(@Path("id") id: Int): GHUser?
+
+    // Fetch all repositories for a user
+    @GET("users/{username}/repos")
+    suspend fun loadGHUserRepos(@Path("username") id: String): List<GHRepository>
+
+    // Fetch all tags for a repository
+    @GET("repos/{owner}/{repo}/tags")
+    suspend fun loadGHRepositoryTags(
+        @Path("owner") owner: String,
+        @Path("repo") repo: String
+    ): List<GHTag>
 
     // Update single GHUser
     @FormUrlEncoded

@@ -18,15 +18,22 @@ import java.io.Serializable
  *      which can increase the size of your APK. Code-generated adapters do not have this overhead.
  */
 @JsonClass(generateAdapter = true)
-data class GHSearchUser(
-    @Json(name = "total_count")
-    var totalCount: Int? = null,
+data class GHTag(
+    @Json(name = "node_id")
+    var nodeId: Int? = null,
 
-    @Json(name = "incomplete_results")
-    var isIncompleteResult: Boolean = false,
+    @Json(name = "tag")
+    var tag: String? = null,
 
-    @Json(name = "items")
-    var users: List<GHUser>? = null
+    @Json(name = "sha")
+    var sha: String? = null,
+
+    @Json(name = "message")
+    var message: String? = null,
+
+    @Json(name = "url")
+    var url: String? = null
+
 ) : Serializable {
     companion object {}
 }

@@ -20,6 +20,7 @@ import com.beblue.gfpf.test.bebluegfpftest.presentation.user.adapter.UserCardIte
 import com.beblue.gfpf.test.bebluegfpftest.presentation.user.adapter.UserRecyclerViewAdapter
 import com.beblue.gfpf.test.bebluegfpftest.util.ProgressBarManager
 import com.beblue.gfpf.test.bebluegfpftest.util.Util
+import com.beblue.gfpf.test.bebluegfpftest.util.updateActionBarTitle
 import com.gfpf.github_api.domain.user.GHUser
 import com.gfpf.github_api.domain.user.GHUserContract
 import com.google.android.material.snackbar.Snackbar
@@ -60,11 +61,10 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
 
         if (mAdapter.itemCount == 0)
             doLoadAll()
-
     }
 
     private fun initSetup() {
-        updateTitle()
+        (activity as? AppCompatActivity)?.updateActionBarTitle(getString(R.string.nav_header_search))
         setupSwipeRefresh()
         setupRecyclerView()
         setupSearchView()
@@ -110,12 +110,26 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
             }
             setProgressIndicator(false)
         }
+
+        /**
+         * Search Users
+         * IsNot SingleEvent to avoid make new request when frag is recreated (nav-back, config change)
+         * @see <SingleEvent> class.
+         */
+        mGHUserViewModel.userRepos.observe(viewLifecycleOwner) { ghRepos ->
+            setProgressIndicator(false)
+        }
+
+        mGHUserViewModel.repositoryTags.observe(viewLifecycleOwner) { ghTags ->
+            setProgressIndicator(false)
+        }
+
     }
 
-    private fun updateTitle() {
+    /*private fun updateTitle() {
         (activity as? AppCompatActivity)?.supportActionBar?.title =
             getString(R.string.nav_header_search)
-    }
+    }*/
 
     private fun setupSwipeRefresh() {
         binding.swipeRefresh.setOnRefreshListener {
@@ -165,7 +179,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 val searchTerm = view.text.toString()
                 if (!TextUtils.isEmpty(searchTerm)) {
-                    if (searchTerm.length >= minSearchTermLength) {
+                    if (searchTerm.length >= MIN_SEARCH_TERM_LENGTH) {
                         doSearch(searchTerm)
                     } else {
                         searchPlateEditText.error = getString(R.string.search_term_min_length)
@@ -228,7 +242,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
 
     override fun showGHUserDetailUI(requestedUser: GHUser) {
         val bundle = Bundle().apply {
-            putSerializable(GHUser.REQUESTED_USER_KEY, requestedUser)
+            putSerializable(GHUser.REQUESTED_USER_DETAIL_KEY, requestedUser)
         }
         findNavController().navigate(R.id.action_main_frag_to_detailed_frag, bundle)
     }
@@ -251,7 +265,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
     }
 
     companion object {
-        private const val minSearchTermLength = 3
+        private const val MIN_SEARCH_TERM_LENGTH = 3
         private var isSearchMode = false
     }
 }

@@ -5,6 +5,7 @@ import com.gfpf.github_api.util.SingleEvent
 
 interface GHUserContract {
 
+    //TODO GFPF - MOVE WHOLE FILE TO APP MODULE - WRONG PLACE
     interface View {
         fun setProgressIndicator(isActive: Boolean)
         fun showToastMessage(message: String)
@@ -16,6 +17,8 @@ interface GHUserContract {
         fun searchUserByName(searchTerm: String, forceUpdate: Boolean): LiveData<GHSearchUser?>
         fun loadAllUsers(): LiveData<List<GHUser>>
         fun loadUserById(id: Int): LiveData<SingleEvent<GHUser?>>
+        fun loadUserRepos(username: String): LiveData<List<GHRepository>>
+        fun loadRepoTags(owner: String, repo: String): LiveData<List<GHTag>>
     }
 
     //TODO GFPF - Should I make these methods suspend to avoid spare code?

@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
 /**
- * Data class representing a GitHub User.
+ * Data class representing a GitHub Full User.
  *
  * Using Moshi with code generation (via @JsonClass(generateAdapter = true)) is preferred over reflection
  * because:
@@ -31,11 +31,10 @@ data class GHUser(
     @Json(name = "avatar_url")
     var avatarUrl: String? = null,
 
-    //@SerialName("html_url")
     @Json(name = "html_url")
     var ghUrl: String? = null
 ) : Serializable {
     companion object {
-        const val REQUESTED_USER_KEY = "REQUESTED_USER_KEY"
+        const val REQUESTED_USER_DETAIL_KEY = "REQUESTED_USER_DETAIL_KEY"
     }
 }

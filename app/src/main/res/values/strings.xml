@@ -3,14 +3,14 @@
     <string name="action_settings">Settings</string>
     <string name="nav_header_search">Search Github Users</string>
     <string name="no_results">No results</string>
-    <string name="clear_results">Swipe to refresh to clear search results!</string>
+    <string name="clear_results">Pull to refresh &amp; clear search results</string>
     <string name="required_field">Required field</string>
     <string name="user">User</string>
     <string name="details">Details</string>
-    <string name="search_term_empty">Search term cannot be empty!</string>
+    <string name="search_term_empty">Search term cannot be empty</string>
     <string name="search_term_min_length">Search term must be at least 3</string>
-    <string name="search_hint">Github username…</string>
-    <string name="scroll_up_hint">Uhuuu! Scrolling up!</string>
-    <string name="scroll_up_error">Already at the top!</string>
+    <string name="search_hint">Github username</string>
+    <string name="scroll_up_hint">Uhuuu! Scrolling up</string>
+    <string name="scroll_up_error">Already at the top</string>
 
 </resources>

@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gfpf.github_api.domain.user.GHUserContract
 import com.gfpf.github_api.data.repository.contract.IGHUserRepository
+import com.gfpf.github_api.domain.user.GHRepository
 import com.gfpf.github_api.domain.user.GHSearchUser
+import com.gfpf.github_api.domain.user.GHTag
 import com.gfpf.github_api.domain.user.GHUser
 import com.gfpf.github_api.util.SingleEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +34,14 @@ class UserViewModel @Inject constructor(
     private val _userDetail = MutableLiveData<SingleEvent<GHUser?>>()
     val userDetail: LiveData<SingleEvent<GHUser?>>
         get() = _userDetail
+
+    private val _userRepos = MutableLiveData<List<GHRepository>>()
+    val userRepos: LiveData<List<GHRepository>>
+        get() = _userRepos
+
+    private val _repositoryTags = MutableLiveData<List<GHTag>>()
+    val repositoryTags: LiveData<List<GHTag>>
+        get() = _repositoryTags
 
     override fun loadAllUsers(): LiveData<List<GHUser>> {
         viewModelScope.launch(Dispatchers.IO) {
@@ -61,6 +71,22 @@ class UserViewModel @Inject constructor(
             _userDetail.postValue(SingleEvent(result))
         }
         return userDetail
+    }
+
+    override fun loadUserRepos(username: String): LiveData<List<GHRepository>> {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = mGHUserRepository.loadUserRepos(username)
+            _userRepos.postValue(result)
+        }
+        return userRepos
+    }
+
+    override fun loadRepoTags(owner: String, repo: String): LiveData<List<GHTag>> {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = mGHUserRepository.loadRepoTags(owner, repo)
+            _repositoryTags.postValue(result)
+        }
+        return repositoryTags
     }
 
     fun clearAllResult() {

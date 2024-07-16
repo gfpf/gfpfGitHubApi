@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit
 
 object RetrofitGHServiceApiClient {
     private const val BASE_URL = "https://api.github.com/"
+    //TODO GFPF - Store token in a secure place
     private const val TOKEN: String = "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"
 
     const val STARS_SORT_KEY = "stars"
