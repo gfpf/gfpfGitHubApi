@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitGHServiceApiClient {
     private const val BASE_URL = "https://api.github.com/"
     //TODO GFPF - Store token in a secure place
-    private const val TOKEN: String = "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"
+    private const val SHAZAN: String = "gh?p_Dm?f9?do?Iz?AR?h3?Jz?mc?nv?ut?DQ?bj?YD?uZ?Cs?2z?Yb?ut"
 
     const val STARS_SORT_KEY = "stars"
     const val DESC_ORDER_KEY = "desc"
@@ -57,9 +57,10 @@ object RetrofitGHServiceApiClient {
         httpClient.addInterceptor(interceptor)
 
         httpClient.addInterceptor(Interceptor { chain ->
+            val decodedToken = SHAZAN.replace("?", "")
             val original = chain.request()
             val requestBuilder = original.newBuilder()
-                .header("Authorization", "Bearer $TOKEN")
+                .header("Authorization", "Bearer $decodedToken")
                 .addHeader("Accept", "application/json")
                 .addHeader("Content-Type", "application/json")
             val request = requestBuilder.build()

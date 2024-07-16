@@ -19,24 +19,62 @@ class GHUserInMemoryRepository(private val mServiceApi: GHServiceApi) : IGHUserR
     }
 
     override suspend fun loadAllUsers(): List<GHUser> {
-        //TODO GFPF - Add Room caching strategy
-        if (mCachedResults == null) {
-            mCachedResults = mServiceApi.loadAllGHUsers()
+        return try {
+            //TODO GFPF - Add Room caching strategy
+            if (mCachedResults == null) {
+                mCachedResults = mServiceApi.loadAllGHUsers()
+            }
+            mCachedResults!!
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                Log.e("GFPF_API_ERROR", "Resource not found: ${e.message}")
+            } else {
+                Log.e("GFPF_API_ERROR", "HTTP error: ${e.message}")
+            }
+            emptyList() // Return an empty list if an HttpException occurs
+        } catch (e: Exception) {
+            Log.e("GFPF_API_ERROR", "Unknown error: ${e.message}")
+            emptyList() // Return an empty list if an Exception occurs
         }
-        return mCachedResults!!
-        //return mServiceApi.loadAllGHUsers()
     }
 
-    override suspend fun searchUserByName(name: String): GHSearchUser {
-        return mServiceApi.searchGHUserByName(
-            name,
-            RetrofitGHServiceApiClient.STARS_SORT_KEY,
-            RetrofitGHServiceApiClient.DESC_ORDER_KEY
-        )
+    override suspend fun searchUserByName(name: String): GHSearchUser? {
+        return try {
+            mServiceApi.searchGHUserByName(
+                name,
+                RetrofitGHServiceApiClient.STARS_SORT_KEY,
+                RetrofitGHServiceApiClient.DESC_ORDER_KEY
+            )
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                Log.e("GFPF_API_ERROR", "Resource not found: ${e.message}")
+            } else {
+                Log.e("GFPF_API_ERROR", "HTTP error: ${e.message}")
+            }
+            null // Return null if an HttpException occurs
+        } catch (e: Exception) {
+            Log.e("GFPF_API_ERROR", "Unknown error: ${e.message}")
+            null // Return null if an HttpException occurs
+        }
+
+
     }
 
     override suspend fun loadUserById(id: Int): GHUser? {
-        return mServiceApi.loadGHUserById(id)
+        return try {
+            mServiceApi.loadGHUserById(id)
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                Log.e("GFPF_API_ERROR", "Resource not found: ${e.message}")
+            } else {
+                Log.e("GFPF_API_ERROR", "HTTP error: ${e.message}")
+            }
+            null // Return null if an HttpException occurs
+        } catch (e: Exception) {
+            Log.e("GFPF_API_ERROR", "Unknown error: ${e.message}")
+            null // Return null if an HttpException occurs
+        }
+
     }
 
     override suspend fun loadUserRepos(username: String): List<GHRepository> {
@@ -51,11 +89,23 @@ class GHUserInMemoryRepository(private val mServiceApi: GHServiceApi) : IGHUserR
             emptyList() // Return an empty list if an HttpException occurs
         } catch (e: Exception) {
             Log.e("GFPF_API_ERROR", "Unknown error: ${e.message}")
-            emptyList() // Return an empty list if an HttpException occurs
+            emptyList() // Return an empty list if an Exception occurs
         }
     }
 
     override suspend fun loadRepoTags(owner: String, repo: String): List<GHTag> {
-        return mServiceApi.loadGHRepositoryTags(owner, repo)
+        return try {
+            mServiceApi.loadGHRepositoryTags(owner, repo)
+        } catch (e: HttpException) {
+            if (e.code() == 404) {
+                Log.e("GFPF_API_ERROR", "Resource not found: ${e.message}")
+            } else {
+                Log.e("GFPF_API_ERROR", "HTTP error: ${e.message}")
+            }
+            emptyList() // Return an empty list if an HttpException occurs
+        } catch (e: Exception) {
+            Log.e("GFPF_API_ERROR", "Unknown error: ${e.message}")
+            emptyList() // Return an empty list if an Exception occurs
+        }
     }
 }
