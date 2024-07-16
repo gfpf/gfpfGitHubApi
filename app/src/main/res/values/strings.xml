@@ -4,6 +4,7 @@
     <string name="nav_header_search">Search Github Users</string>
     <string name="no_results">No results</string>
     <string name="no_repos_results">No public repos</string>
+    <string name="no_tags_results">No tags</string>
     <string name="clear_results">Pull to refresh &amp; clear search results</string>
     <string name="required_field">Required field</string>
     <string name="user">User</string>

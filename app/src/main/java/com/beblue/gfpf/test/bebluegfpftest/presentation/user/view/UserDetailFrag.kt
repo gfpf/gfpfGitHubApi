@@ -151,13 +151,15 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     @SuppressLint("NotifyDataSetChanged")
     private fun registerObservers() {
         mGHUserViewModel.userRepos.observe(viewLifecycleOwner) { ghRepos ->
-            Toast.makeText(context, "Repos: ${ghRepos.size}", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "Repos: ${ghRepos.size}", Toast.LENGTH_SHORT).show()
+            showToastMessage("Repos: ${ghRepos.size}")
             setReposProgressIndicator(false)
             showUserRepoListUI(ghRepos, false)
         }
 
         mGHUserViewModel.repositoryTags.observe(viewLifecycleOwner) { ghTags ->
-            Toast.makeText(context, "Tags: ${ghTags.size}", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(context, "Tags: ${ghTags.size}", Toast.LENGTH_SHORT).show()
+            showToastMessage("Tags: ${ghTags.size}")
             setTagsProgressIndicator(false)
             showUserTagListUI(ghTags)
         }
@@ -186,7 +188,8 @@ class UserDetailFrag : Fragment(), IUserDetailFrag.View, View.OnClickListener {
     }
 
     override fun showUserTagListUI(ghTags: List<GHTag>?) {
-        Toast.makeText(context, "Tags: ${ghTags?.size}", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context, "Tags: ${ghTags?.size}", Toast.LENGTH_SHORT).show()
+        showToastMessage("Tags: ${ghTags?.size}")
     }
 
     private fun showRequestedItem() {
