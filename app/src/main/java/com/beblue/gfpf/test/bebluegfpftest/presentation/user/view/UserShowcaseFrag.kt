@@ -18,35 +18,37 @@ import com.beblue.gfpf.test.bebluegfpftest.R
 import com.beblue.gfpf.test.bebluegfpftest.databinding.UserShowcaseFragBinding
 import com.beblue.gfpf.test.bebluegfpftest.presentation.user.adapter.UserCardItemDecoration
 import com.beblue.gfpf.test.bebluegfpftest.presentation.user.adapter.UserRecyclerViewAdapter
+import com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.contract.IUserDetailFrag
 import com.beblue.gfpf.test.bebluegfpftest.util.ProgressBarManager
 import com.beblue.gfpf.test.bebluegfpftest.util.Util
 import com.beblue.gfpf.test.bebluegfpftest.util.updateActionBarTitle
 import com.gfpf.github_api.domain.user.GHUser
-import com.gfpf.github_api.domain.user.GHUserContract
+import com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.contract.IUserShowcaseFrag
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class UserShowcaseFrag : Fragment(), GHUserContract.View,
+class UserShowcaseFrag : Fragment(), IUserShowcaseFrag.View,
     UserRecyclerViewAdapter.UserRecyclerViewClickListener {
 
-    private lateinit var binding: UserShowcaseFragBinding
+    private lateinit var mBinding: UserShowcaseFragBinding
     private val mGHUserViewModel: UserViewModel by viewModels()
+    private lateinit var mActionListener: IUserShowcaseFrag.ActionListener
 
     @Inject
     lateinit var mAdapter: UserRecyclerViewAdapter
 
-    @Inject
-    lateinit var layoutManager: LinearLayoutManager
+    //@Inject
+    private lateinit var mLayoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = UserShowcaseFragBinding.inflate(inflater, container, false)
-        return binding.root
+        mBinding = UserShowcaseFragBinding.inflate(inflater, container, false)
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,6 +66,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
     }
 
     private fun initSetup() {
+        mActionListener = mGHUserViewModel
         (activity as? AppCompatActivity)?.updateActionBarTitle(getString(R.string.nav_header_search))
         setupSwipeRefresh()
         setupRecyclerView()
@@ -81,7 +84,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
          */
         mGHUserViewModel.allUsers.observe(viewLifecycleOwner) { result ->
             if (!isSearchMode) {
-                showGHUserListUI(result ?: emptyList(), false)
+                showUserListUI(result ?: emptyList(), false)
                 setProgressIndicator(false)
             }
         }
@@ -93,7 +96,7 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
          */
         mGHUserViewModel.searchResult.observe(viewLifecycleOwner) { ghSearchUser ->
             if (isSearchMode) {
-                showGHUserListUI(ghSearchUser?.users ?: emptyList(), false)
+                showUserListUI(ghSearchUser?.users ?: emptyList(), false)
                 setProgressIndicator(false)
                 showToastMessage(getString(R.string.clear_results))
             }
@@ -106,73 +109,56 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
          */
         mGHUserViewModel.userDetail.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled()?.let { user ->
-                showGHUserDetailUI(user)
+                showUserDetailUI(user)
             }
             setProgressIndicator(false)
         }
-
-        /**
-         * Search Users
-         * IsNot SingleEvent to avoid make new request when frag is recreated (nav-back, config change)
-         * @see <SingleEvent> class.
-         */
-        mGHUserViewModel.userRepos.observe(viewLifecycleOwner) { ghRepos ->
-            setProgressIndicator(false)
-        }
-
-        mGHUserViewModel.repositoryTags.observe(viewLifecycleOwner) { ghTags ->
-            setProgressIndicator(false)
-        }
-
     }
 
-    /*private fun updateTitle() {
-        (activity as? AppCompatActivity)?.supportActionBar?.title =
-            getString(R.string.nav_header_search)
-    }*/
-
     private fun setupSwipeRefresh() {
-        binding.swipeRefresh.setOnRefreshListener {
+        mBinding.swipeRefresh.setOnRefreshListener {
             isSearchMode = false
             doLoadAll()
             clearSearchView()
             animateSearchView()
         }
-        ProgressBarManager.init(binding.swipeRefresh)
+        ProgressBarManager.init(mBinding.swipeRefresh)
     }
 
     private fun setupRecyclerView() {
-        binding.recyclerView.setHasFixedSize(true)
-        layoutManager = LinearLayoutManager(context)
-        binding.recyclerView.layoutManager = layoutManager
+        mBinding.recyclerView.apply {
+            // Set layoutManager once
+            if (layoutManager == null) {
+                mLayoutManager = LinearLayoutManager(context)
+                layoutManager = mLayoutManager
 
-        val smallPadding = resources.getDimensionPixelSize(R.dimen.nav_header_vertical_spacing)
-        val itemDecoration = UserCardItemDecoration(smallPadding, smallPadding)
-        binding.recyclerView.addItemDecoration(itemDecoration)
-
-        if (!::mAdapter.isInitialized) {
-            mAdapter = UserRecyclerViewAdapter(requireContext(), this)
+                val smallPadding =
+                    resources.getDimensionPixelSize(R.dimen.nav_header_vertical_spacing)
+                val itemDecoration = UserCardItemDecoration(smallPadding, smallPadding)
+                addItemDecoration(itemDecoration)
+            }
+            setHasFixedSize(true)
+            adapter = mAdapter
         }
-        binding.recyclerView.adapter = mAdapter
     }
 
     fun scrollToTop() {
-        layoutManager.let {
+        mLayoutManager.let {
             if (it.findFirstVisibleItemPosition() == 0) {
                 showToastMessage(getString(R.string.scroll_up_error))
             } else {
-                binding.recyclerView.smoothScrollToPosition(0)
+                mBinding.recyclerView.smoothScrollToPosition(0)
             }
         }
     }
 
     private fun setupSearchView() {
-        val searchViewPlateId = binding.searchView.context.resources.getIdentifier(
+        val searchViewPlateId = mBinding.searchView.context.resources.getIdentifier(
             "android:id/search_src_text",
             null,
             null
         )
-        val searchPlateEditText: EditText = binding.searchView.findViewById(searchViewPlateId)
+        val searchPlateEditText: EditText = mBinding.searchView.findViewById(searchViewPlateId)
         searchPlateEditText.imeOptions = EditorInfo.IME_ACTION_SEARCH
 
         searchPlateEditText.setOnEditorActionListener { view, actionId, _ ->
@@ -194,35 +180,35 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
     }
 
     private fun clearSearchView() {
-        binding.searchView.setQuery("", false)
-        binding.searchView.clearFocus()
-        binding.searchView.onActionViewCollapsed()
+        mBinding.searchView.setQuery("", false)
+        mBinding.searchView.clearFocus()
+        mBinding.searchView.onActionViewCollapsed()
     }
 
     private fun animateSearchView() {
         val animation = AnimationUtils.loadAnimation(requireContext(), R.anim.anim_bounce_in_right)
-        binding.searchView.startAnimation(animation)
+        mBinding.searchView.startAnimation(animation)
     }
 
     private fun doLoadAll() {
         setProgressIndicator(true)
-        mGHUserViewModel.loadAllUsers()
+        mActionListener.loadAllUsers()
     }
 
     private fun doSearch(searchTerm: String) {
         Util.hideKeyboard(requireActivity())
         setProgressIndicator(true)
         isSearchMode = true
-        mGHUserViewModel.searchUserByName(searchTerm, false)
+        mActionListener.searchUserByName(searchTerm, false)
     }
 
-    override fun showGHUserListUI(users: List<GHUser>?, isAppend: Boolean) {
+    override fun showUserListUI(users: List<GHUser>?, isAppend: Boolean) {
         if (users.isNullOrEmpty()) {
-            binding.noResultsLabel.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
+            mBinding.noResultsLabel.visibility = View.VISIBLE
+            mBinding.recyclerView.visibility = View.GONE
         } else {
-            binding.noResultsLabel.visibility = View.GONE
-            binding.recyclerView.visibility = View.VISIBLE
+            mBinding.noResultsLabel.visibility = View.GONE
+            mBinding.recyclerView.visibility = View.VISIBLE
             if (isAppend) {
                 mAdapter.appendData(users)
             } else {
@@ -237,10 +223,10 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
 
     private fun doLoadUserById(selectedUser: GHUser) {
         setProgressIndicator(true)
-        selectedUser.id?.let { mGHUserViewModel.loadUserById(it) }
+        selectedUser.id?.let { mActionListener.loadUserById(it) }
     }
 
-    override fun showGHUserDetailUI(requestedUser: GHUser) {
+    override fun showUserDetailUI(requestedUser: GHUser) {
         val bundle = Bundle().apply {
             putSerializable(GHUser.REQUESTED_USER_DETAIL_KEY, requestedUser)
         }
@@ -256,7 +242,6 @@ class UserShowcaseFrag : Fragment(), GHUserContract.View,
     }
 
     override fun showToastMessage(message: String) {
-        // Implementation for showing a toast message
         Snackbar.make(
             requireView(),
             message,

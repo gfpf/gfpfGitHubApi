@@ -1,24 +1,25 @@
-package com.gfpf.github_api.domain.user
+package com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.contract
 
 import androidx.lifecycle.LiveData
+import com.gfpf.github_api.domain.user.GHSearchUser
+import com.gfpf.github_api.domain.user.GHUser
 import com.gfpf.github_api.util.SingleEvent
 
-interface GHUserContract {
+interface IUserShowcaseFrag {
 
-    //TODO GFPF - MOVE WHOLE FILE TO APP MODULE - WRONG PLACE
     interface View {
         fun setProgressIndicator(isActive: Boolean)
         fun showToastMessage(message: String)
-        fun showGHUserListUI(users: List<GHUser>?, isAppend: Boolean)
-        fun showGHUserDetailUI(requestedUser: GHUser)
+        fun showUserListUI(users: List<GHUser>?, isAppend: Boolean)
+        fun showUserDetailUI(requestedUser: GHUser)
     }
 
-    interface UserActionsListener {
+    interface ActionListener {
         fun searchUserByName(searchTerm: String, forceUpdate: Boolean): LiveData<GHSearchUser?>
         fun loadAllUsers(): LiveData<List<GHUser>>
         fun loadUserById(id: Int): LiveData<SingleEvent<GHUser?>>
-        fun loadUserRepos(username: String): LiveData<List<GHRepository>>
-        fun loadRepoTags(owner: String, repo: String): LiveData<List<GHTag>>
+        //fun loadUserRepos(username: String): LiveData<List<GHRepository>>
+        //fun loadRepoTags(owner: String, repo: String): LiveData<List<GHTag>>
     }
 
     //TODO GFPF - Should I make these methods suspend to avoid spare code?

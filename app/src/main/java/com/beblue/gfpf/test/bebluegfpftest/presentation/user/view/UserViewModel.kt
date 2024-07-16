@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gfpf.github_api.domain.user.GHUserContract
+import com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.contract.IUserDetailFrag
+import com.beblue.gfpf.test.bebluegfpftest.presentation.user.view.contract.IUserShowcaseFrag
 import com.gfpf.github_api.data.repository.contract.IGHUserRepository
 import com.gfpf.github_api.domain.user.GHRepository
 import com.gfpf.github_api.domain.user.GHSearchUser
@@ -19,7 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userRepository: IGHUserRepository
-) : ViewModel(), GHUserContract.UserActionsListener {
+) : ViewModel(), IUserShowcaseFrag.ActionListener, IUserDetailFrag.ActionListener {
 
     private val mGHUserRepository: IGHUserRepository = userRepository
 

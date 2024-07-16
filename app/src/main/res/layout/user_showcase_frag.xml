@@ -44,7 +44,7 @@
                     android:layout_below="@id/search_view"
                     android:scrollbarStyle="insideInset"
                     android:visibility="gone"
-                    tools:listitems="@layout/card_item" />
+                    tools:listitems="@layout/user_card_item" />
 
                 <TextView
                     android:id="@+id/no_results_label"
