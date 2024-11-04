@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#### Needed when isMinifyEnabled = true ####
+#-keep class com.gfpf.github_api.*
+#-keep class com.gfpf.github_api.data.repository.contract.IGHUserRepository
+#-keep class com.gfpf.github_api.di.contract.RepositoryModule_ProvideUserRepositoryFactory
+#-keep class com.gfpf.github_api.util.SingleEvent

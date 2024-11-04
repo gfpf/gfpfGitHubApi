@@ -14,7 +14,7 @@ android {
         signature {
             keyAlias 'key0'
             keyPassword '123456'
-            storeFile file('/Users/Gus/Documents/android-projects/BeBlueGFPFTest/debug.keystore')
+            storeFile file('D:/workspace/gfpfGitHubApi/debug.keystore')
             storePassword '123456'
         }
     }
@@ -98,24 +98,25 @@ dependencies {
     implementation project(":github_api")
 
     // Local tests
-    implementation 'androidx.test:monitor:1.7.1'
+    implementation 'androidx.test:monitor:1.7.2'
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     testImplementation 'androidx.test.ext:junit-ktx:1.2.1'
     testImplementation "org.mockito:mockito-all:$rootProject.ext.mockitoVersion"
     testImplementation "org.hamcrest:hamcrest-all:$rootProject.ext.hamcrestVersion"
-    testImplementation "org.powermock:powermock-module-junit4:$rootProject.ext.powerMockito"
+    testImplementation "org.powermock:powermock-core:2.0.9"
+    testImplementation "org.powermock:powermock-module-junit4:2.0.9"
     testImplementation "org.powermock:powermock-api-mockito:$rootProject.ext.powerMockito"
 
     // Instrumentation & UI tests
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    androidTestImplementation 'androidx.annotation:annotation:1.8.0'
+    androidTestImplementation 'androidx.annotation:annotation:1.9.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
 
     // Lifecycle components
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
     //annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-common-java8:2.8.3"
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.8.7'
 
     // DB
     implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"
@@ -124,8 +125,8 @@ dependencies {
 
     // DI
     // Hilt dependencies
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt 'com.google.dagger:hilt-android-compiler:2.51.1'
+    implementation('com.google.dagger:hilt-android:2.52')
+    kapt 'com.google.dagger:hilt-android-compiler:2.52'
 
     // Image & Design
     implementation "com.squareup.picasso:picasso:$rootProject.picassoVersion"
@@ -136,8 +137,8 @@ dependencies {
     /*implementation 'com.github.chrisbanes:PhotoView:2.1.3'*/
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"
+    implementation('org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0')
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0'
 
     // OkHttp interceptors for logging
     implementation 'com.squareup.retrofit2:retrofit:2.11.0'
@@ -148,7 +149,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.12.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
     implementation 'com.google.android.gms:play-services-auth:21.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.nav_version"

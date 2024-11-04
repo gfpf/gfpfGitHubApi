@@ -20,9 +20,9 @@ rootProject.name = getProjectName()
 
 def getProjectName() {
     try {
-        def stringsFile = file("./src/main/res/values/string.xml")
+        def stringsFile = file("app/src/main/res/values/strings.xml")
         return new groovy.xml.XmlParser().parse(stringsFile).string.find { it.@name.equals 'app_name' }.text()
-    }catch(e){
+    } catch (e) {
         println(e)
         return "GitHubApi"
     }
